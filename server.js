@@ -30,19 +30,22 @@ const cert = fs.readFileSync('cert.crt');
 
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer({key, cert}, app);
+const expressServer = https.createServer(app);
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
     cors: {
         origin: [
             "https://localhost",
-             'https://https://r3dxx-9ce6f110c87b.herokuapp.com' //if using a phone or another computer
+             'https://r3dxx-9ce6f110c87b.herokuapp.com' //if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
 });
-expressServer.listen(8181);
 
+const PORT = process.env.PORT || 3000;
+express.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 //offers will contain {}
 const offers = [
     // offererUserName
