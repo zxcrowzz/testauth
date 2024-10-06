@@ -36,7 +36,7 @@ const io = socketio(expressServer,{
     cors: {
         origin: [
             "https://localhost",
-             'https://10.0.0.66' //if using a phone or another computer
+             'https://https://r3dxx-9ce6f110c87b.herokuapp.com' //if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
