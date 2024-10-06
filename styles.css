@@ -1,0 +1,120 @@
+.container {
+    position: absolute;
+    height: 100%;
+    width: 40%;
+    top: 0;
+    background-color: #222222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-player {
+    
+    width: 100%;  /* Adjust to fit the width of the container */
+    height: auto%; /* Maintain aspect ratio */
+    max-height: 40%; /* Ensure each video takes up no more than half the container height */
+    margin: 0px 0; /* Add some vertical margin between videos */
+
+    
+}
+
+#video-wrapper {
+    position: relative;
+}
+
+#waiting {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 240px;
+    height: 40px;
+}
+#answer {
+
+    
+    
+    width: 200px;
+
+    height: -5px;
+    
+}
+
+#hangup {
+
+
+    width: 100px;
+}
+#call {
+    width: 100px;
+
+    top: 0px;
+
+    left: 1000px;
+
+}
+
+#inputz {
+
+    position: relative;
+
+
+    width: 1000px;
+
+    z-index: 1;
+
+
+    border-radius: 10px;
+
+    left: 790px;
+
+    top: 860px;
+
+    
+text-align: center;
+
+}
+
+
+/* Container for chat messages */
+#container1 {
+    position: absolute; /* Enable absolute positioning */
+    right: 10px; /* Adjust this value to move it to the right */
+    top: 20px; /* Optional: adjust vertical position */
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px; /* Fixed height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    width: 1080px;
+    
+}
+
+
+/* Individual message styles */
+#container1 div {
+    position: relative;
+    margin: 5px 0;
+    padding: 1px;
+    border-radius: 4px;
+
+
+    color: black;
+
+    
+
+    z-index: 2;
+}
+
+/* User messages */
+#container1 div.user-message {
+    background-color: #007bff;
+    color: black;
+    text-align: left;
+}
