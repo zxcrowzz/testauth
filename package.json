@@ -1,0 +1,37 @@
+{
+  "name": "signalingpeerconnection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scripts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.6",
+    "docker": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.2.0",
+    "favicon": "^0.0.2",
+    "hbs": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mkcert": "^1.5.1",
+    "mongoose": "^8.7.0",
+    "nodemailer": "^6.9.15",
+    "nodemon": "3.1.7",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "^2.5.0",
+    "socket.io": "^4.6.2",
+    "uuid": "^10.0.0"
+  }
+}
