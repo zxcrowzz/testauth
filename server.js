@@ -42,7 +42,7 @@ const io = socketio(expressServer,{
 });
 
 const PORT = process.env.PORT || 3000;
-express.listen(PORT, () => {
+expressServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 //offers will contain {}
