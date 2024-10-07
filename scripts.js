@@ -227,7 +227,23 @@ socket.on('hangUp', () => {
     console.log('Remote user hung up');
 });
 
+socket.on('resetUI', ({ hasAnswered }) => {
+    const answerButton = document.querySelector('#answer');
+    const callButton = document.querySelector('#call');
 
+    // Hide the answer button if the user has already answered a call
+    if (hasAnswered) {
+        if (answerButton) {
+            answerButton.remove(); // Remove the button if it exists
+        }
+    } else {
+        if (answerButton) {
+            answerButton.style.display = 'block'; // Show the button if needed
+        }
+    }
+
+    // Additional UI state management can go here
+});
 
 socket.on('disconnect', () => {
     resetClientState()
