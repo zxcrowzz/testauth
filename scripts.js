@@ -99,7 +99,10 @@ const addAnswer = async(offerObj)=>{
     //at this point, the offer and answer have been exchanged!
     //now CLIENT1 needs to set the remote
     await peerConnection.setRemoteDescription(offerObj.answer)
-    // console.log(peerConnection.signalingState)
+    const answerzz = document.querySelector('#answer');
+    if (answerzz) {
+        answerzz.remove(); // Remove it if you want to prevent future calls
+    }
 }
 
 const fetchUserMedia = ()=>{
