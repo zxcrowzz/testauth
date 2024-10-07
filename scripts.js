@@ -173,24 +173,23 @@ const createPeerConnection = (offerObj)=>{
 
 
 const resetClientState = () => {
+    // Stop local stream tracks
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
+    
+    // Close peer connection if it exists
     if (peerConnection) {
         peerConnection.close();
+        peerConnection = null; // Clear reference
     }
+    
+    // Clear video elements
     localVideoEl.srcObject = null;
     remoteVideoEl.srcObject = null;
 
-    // Reinitialize for new calls
-    fetchUserMedia()
-        .then(() => {
-            initializePeerConnection();
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-        })
-        .catch(error => {
-            console.error('Error accessing media devices.', error);
-        });
+    isInCall = false; // Reset call state
+    console.log('Client state reset');
 };
 
 const addNewIceCandidate = iceCandidate=>{
@@ -204,28 +203,16 @@ const addNewIceCandidate = iceCandidate=>{
 
 // Function to handle the hang-up action
 function hangUp() {
-
-    if (isInCall === false) {
+    if (!isInCall) {
         console.log('No active call to hang up from.');
-        return; // Exit if there’s no active call
+        return;
     }
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-    }
-
-    if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null;
-    }
-
-    localVideoEl.srcObject = null;
-    remoteVideoEl.srcObject = null; // Clear remote video
-    console.log('Call ended');
+    
+    // Call the reset function
+    resetClientState();
     
     // Emit hang-up event to the signaling server
     socket.emit('hangUp');
-
-    isInCall = false; 
 }
 
 // Listen for the hang-up event from the signaling server
