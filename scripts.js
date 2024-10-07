@@ -1,9 +1,9 @@
 const userName = "Pantsbro"+Math.floor(Math.random() * 100000)
 const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
-
+let isInCall = false; 
 //if trying it on a phone, use this instead...
- const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com',{
+ const socket = io.connect('https://10.0.0.66:8181/',{
 //const socket = io.connect('https://localhost:8181/',{
     auth: {
         userName,password
@@ -31,6 +31,7 @@ let peerConfiguration = {
 
 //when a client initiates a call
 const call = async e=>{
+    
     await fetchUserMedia();
 
     //peerConnection is all set with our STUN servers sent over
@@ -51,6 +52,7 @@ const call = async e=>{
 }
 
 const answerOffer = async(offerObj)=>{
+    isInCall = true
     await fetchUserMedia()
     await createPeerConnection(offerObj);
     const answer = await peerConnection.createAnswer({}); //just to make the docs happy
@@ -83,7 +85,7 @@ const fetchUserMedia = ()=>{
         try{
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: true,
-                // audio: true,
+                audio: true
             });
             localVideoEl.srcObject = stream;
             localStream = stream;    
@@ -148,7 +150,26 @@ const createPeerConnection = (offerObj)=>{
 }
 
 
+const resetClientState = () => {
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+    if (peerConnection) {
+        peerConnection.close();
+    }
+    localVideoEl.srcObject = null;
+    remoteVideoEl.srcObject = null;
 
+    // Reinitialize for new calls
+    fetchUserMedia()
+        .then(() => {
+            initializePeerConnection();
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+        })
+        .catch(error => {
+            console.error('Error accessing media devices.', error);
+        });
+};
 
 const addNewIceCandidate = iceCandidate=>{
     peerConnection.addIceCandidate(iceCandidate)
@@ -161,26 +182,54 @@ const addNewIceCandidate = iceCandidate=>{
 
 // Function to handle the hang-up action
 function hangUp() {
-    // Stop all tracks in the local stream
+
+    if (isInCall === false) {
+        console.log('No active call to hang up from.');
+        return; // Exit if there’s no active call
+    }
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
+
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
+
+    localVideoEl.srcObject = null;
+    remoteVideoEl.srcObject = null; // Clear remote video
+    console.log('Call ended');
     
-    // Stop all tracks in the remote stream
-    if (remoteStream) {
-        remoteStream.getTracks().forEach(track => track.stop());
-    }
+    // Emit hang-up event to the signaling server
+    socket.emit('hangUp');
 
- 
-
-    // Remove remote video element
-    const remoteVideo = document.getElementById('remote-video');
-    if (remoteVideo) {
-        remoteVideo.remove();
-    }
-
-    // Optional: You might also want to handle additional cleanup or UI changes here
+    isInCall = false; 
 }
+
+// Listen for the hang-up event from the signaling server
+socket.on('hangUp', () => {
+    if (remoteVideoEl.srcObject) {
+        remoteVideoEl.srcObject.getTracks().forEach(track => track.stop());
+    }
+    remoteVideoEl.srcObject = null; // Clear remote video
+    console.log('Remote user hung up');
+});
+
+
+
+socket.on('disconnect', () => {
+    resetClientState()
+    console.log('You have been disconnected');
+    
+    // Clear local and remote streams
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+    localVideoEl.srcObject = null; // Clear local video
+    remoteVideoEl.srcObject = null; // Clear remote video
+
+    // Optionally show a notification or update the UI to reflect the disconnection
+});
 
 // Add event listener to the hang-up button
 
