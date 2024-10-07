@@ -31,3 +31,13 @@ function createOfferEls(offers){
         answerEl.appendChild(newOfferEl);
     })
 }
+
+
+function clearAnswerButtons() {
+    const answerEl = document.querySelector('#answer');
+    while (answerEl.firstChild) {
+        answerEl.removeChild(answerEl.firstChild);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', clearAnswerButtons);
