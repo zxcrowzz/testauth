@@ -27,20 +27,28 @@ let peerConfiguration = {
             ]
         },
         {
-            // Public TURN server
-            urls: [
-                'turn:192.158.29.39:3478?transport=udp',
-                'turn:192.158.29.39:3478?transport=tcp'
-            ]
+            urls: "turn:global.relay.metered.ca:80",
+            username: "5736356acd7dcf91086ca11f",
+            credential: "PYJGsKfFnlvnxoPR",
         },
         {
-            // Another public TURN server (optional)
-            urls: [
-                'turn:turn.anyfirewall.com:443?transport=tcp'
-            ]
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "5736356acd7dcf91086ca11f",
+            credential: "PYJGsKfFnlvnxoPR",
+        },
+        {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "5736356acd7dcf91086ca11f",
+            credential: "PYJGsKfFnlvnxoPR",
+        },
+        {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "5736356acd7dcf91086ca11f",
+            credential: "PYJGsKfFnlvnxoPR",
         }
     ]
 };
+
 
 
 //when a client initiates a call
