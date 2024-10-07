@@ -25,23 +25,24 @@ const { v4: uuidV4 } = require('uuid');
 //we generated them with mkcert
 // $ mkcert create-ca
 // $ mkcert create-cert
-const key = fs.readFileSync('cert.key');
-const cert = fs.readFileSync('cert.crt');
+
 let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer({key, cert}, app);
+const expressServer = https.createServer(app);
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
     cors: {
         origin: [
-            "https://localhost",
-             'https://10.0.0.66' //if using a phone or another computer
+            "https://10.0.0.66",
+             'https://r3dxx-9ce6f110c87b.herokuapp.com' //if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
 });
-expressServer.listen(8181);
+expressServer.listen(process.env.PORT || 8181, () => {
+    console.log(`Server is running on port ${process.env.PORT || 8181}`);
+});
 
 //offers will contain {}
 const offers = [
