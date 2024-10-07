@@ -58,7 +58,7 @@ const connectedSockets = [
 
 io.on('connection',(socket)=>{
     connectedClients++;
-    resetUIState(socket);
+    
     // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
@@ -423,12 +423,7 @@ app.get('/', (req, res) => {
         res.redirect('/login');
     }
 });
-function resetUIState(socket) {
-    // This function can send a message to the client to reset their UI
-    socket.emit('resetUI', {
-        hasAnswered: hasAnsweredCall // Send the current state to the client
-    });
-}
+
 // Room route
 app.get('/:index.html:', (req, res) => {
     res.render('index', { roomId: req.params.room });
