@@ -3,7 +3,7 @@ const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
 
 //if trying it on a phone, use this instead...
- const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com/',{
+ const socket = io.connect('https://10.0.0.66:8181',{
 //const socket = io.connect('https://localhost:8181/',{
     auth: {
         userName,password
