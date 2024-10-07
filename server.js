@@ -87,7 +87,7 @@ io.on('connection',(socket)=>{
         socket.broadcast.emit('userDisconnected', { userId: socket.id });
         if (connectedClients === 0) {
             // Trigger reset logic when no clients are connected
-            resetServerState()
+            io.emit('lastUserLeft');
         }
     });
 
