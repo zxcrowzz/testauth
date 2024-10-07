@@ -58,10 +58,7 @@ const connectedSockets = [
 
 io.on('connection',(socket)=>{
     connectedClients++;
-    const answerButton = document.querySelector('#answer');
-    if (answerButton) {
-        answerButton.style.display = 'none'; // Hide the answer button
-    }
+    
     // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
