@@ -31,7 +31,8 @@ function createOfferEls(offers){
         answerEl.appendChild(newOfferEl);
     })
 }
-
+const callButton = document.querySelector('#call'); // Select the button by its ID
+callButton.disabled = true;
 
 function clearAnswerButtons() {
     const answerEl = document.querySelector('#answer');
