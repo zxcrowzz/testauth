@@ -1,5 +1,6 @@
 const userName = "Pantsbro"+Math.floor(Math.random() * 100000)
 const password = "x";
+let hasAnsweredCall = false;
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false; 
 //if trying it on a phone, use this instead...
@@ -74,6 +75,7 @@ const call = async e=>{
 }
 
 const answerOffer = async(offerObj)=>{
+    hasAnsweredCall = true;
     isInCall = true
     await fetchUserMedia()
     await createPeerConnection(offerObj);
