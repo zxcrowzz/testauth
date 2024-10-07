@@ -198,21 +198,7 @@ const addNewIceCandidate = iceCandidate=>{
 }
 
 
-function resetUIState() {
-    const answerButton = document.querySelector('#answer');
-    const callButton = document.querySelector('#call');
 
-    // Hide the answer button and show the call button
-    if (answerButton) {
-        answerButton.style.display = 'none'; // Hide the answer button
-    }
-    
-    if (callButton) {
-        callButton.style.display = 'block'; // Show the call button if applicable
-    }
-
-    // Reset other UI elements as necessary
-}
 
 
 // Function to handle the hang-up action
@@ -238,10 +224,7 @@ socket.on('hangUp', () => {
     console.log('Remote user hung up');
 });
 
-socket.on('connect', () => {
-    console.log('You are connected to the server.');
-    resetUIState(); // Call to reset the UI on reconnect
-});
+
 
 socket.on('disconnect', () => {
     resetClientState()
