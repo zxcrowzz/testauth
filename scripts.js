@@ -3,16 +3,42 @@ const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false; 
 //if trying it on a phone, use this instead...
- const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
+const userName = "Pantsbro" + Math.floor(Math.random() * 100000);
+const password = "x";
+document.querySelector('#user-name').innerHTML = userName;
+let isInCall = false;
+
+// Use this if deploying
+const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
     reconnectionAttempts: 5,
     timeout: 10000,
-    transports: ['websocket']
-});
-//const socket = io.connect('https://localhost:8181/',{
+    transports: ['websocket'],
     auth: {
-        userName,password
+        userName,
+        password
     }
-})
+});
+
+// Handle connection events
+socket.on('connect', () => {
+    console.log('Successfully connected to the server.');
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from the server.');
+});
+
+// Example event handling
+socket.on('chat message', (message) => {
+    console.log('New chat message:', message);
+});
+
+// Emit an example event
+document.getElementById('send-message').addEventListener('click', () => {
+    const message = document.getElementById('message-input').value;
+    socket.emit('chat message', message);
+});
+
 
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
