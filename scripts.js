@@ -19,15 +19,29 @@ let peerConnection; //the peerConnection that the two clients use to talk
 let didIOffer = false;
 
 let peerConfiguration = {
-    iceServers:[
+    iceServers: [
         {
-            urls:[
-              'stun:stun.l.google.com:19302',
-              'stun:stun1.l.google.com:19302'
+            urls: [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302'
+            ]
+        },
+        {
+            // Public TURN server
+            urls: [
+                'turn:192.158.29.39:3478?transport=udp',
+                'turn:192.158.29.39:3478?transport=tcp'
+            ]
+        },
+        {
+            // Another public TURN server (optional)
+            urls: [
+                'turn:turn.anyfirewall.com:443?transport=tcp'
             ]
         }
     ]
-}
+};
+
 
 //when a client initiates a call
 const call = async e=>{
