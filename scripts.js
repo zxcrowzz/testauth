@@ -3,8 +3,7 @@ const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false; 
 //if trying it on a phone, use this instead...
-const userName = "Pantsbro" + Math.floor(Math.random() * 100000);
-const password = "x";
+
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false;
 
