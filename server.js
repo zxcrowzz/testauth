@@ -58,7 +58,7 @@ const connectedSockets = [
 
 io.on('connection',(socket)=>{
     connectedClients++;
-     resetUIState();
+     
     // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
