@@ -239,10 +239,7 @@ socket.on('resetUI', ({ hasAnswered }) => {
             answerButton.remove(); // Remove the button if it exists
         }
     } else {
-        if (answerButton) {
-            answerButton.style.display = 'block'; // Show the button if needed
-        }
-    }
+
 
     // Additional UI state management can go here
 });
