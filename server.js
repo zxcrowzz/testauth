@@ -29,17 +29,17 @@ const { v4: uuidV4 } = require('uuid');
 let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer(app);
 
-expressServer.listen(process.env.PORT || 8181, () => {
-    console.log(`Server is running on port ${process.env.PORT || 8181}`);
+
+const expressServer = app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 3000}`);
 });
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
     cors: {
         origin: [
-            'https://10.0.0.66',
-             "https://r3dxx-9ce6f110c87b.herokuapp.com" //if using a phone or another computer
+            "https://https://r3dxx-9ce6f110c87b.herokuapp.com",
+            'https://10.0.0.66' // if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
