@@ -88,6 +88,7 @@ io.on('connection',(socket)=>{
         if (connectedClients === 0) {
             // Trigger reset logic when no clients are connected
             io.emit('lastUserLeft');
+            console.log('Last user left, notifying all clients.');
         }
     });
 
