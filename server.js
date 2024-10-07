@@ -36,8 +36,8 @@ const expressServer = app.listen(process.env.PORT || 3000, () => {
 const io = socketio(expressServer, {
     cors: {
         origin: [
-            "https://r3dxx-9ce6f110c87b.herokuapp.com",
-            'https://10.0.0.66' // if using a phone or another computer
+            'https://10.0.0.66',
+            "https://r3dxx-9ce6f110c87b.herokuapp.com"
         ],
         methods: ["GET", "POST"]
     }
