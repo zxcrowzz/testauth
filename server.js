@@ -25,12 +25,11 @@ const { v4: uuidV4 } = require('uuid');
 //we generated them with mkcert
 // $ mkcert create-ca
 // $ mkcert create-cert
-
+const key = fs.readFileSync('cert.key');
+const cert = fs.readFileSync('cert.crt');
 let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-
-
 const expressServer = app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on port ${process.env.PORT || 3000}`);
 });
@@ -44,7 +43,6 @@ const io = socketio(expressServer,{
         methods: ["GET", "POST"]
     }
 });
-
 
 //offers will contain {}
 const offers = [
@@ -117,7 +115,6 @@ io.on('connection',(socket)=>{
     })
 const resetServerState = () => {
     console.log('Resetting server state...');
-    
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;
@@ -132,9 +129,8 @@ const resetServerState = () => {
     // Clear remote stream
     if (remoteStream) {
         remoteStream = null;
-    } // Corrected closing brace here
-}; // This is the closing brace for the function
-
+    
+};
     socket.on('newAnswer',(offerObj,ackFunction)=>{
         console.log(offerObj);
         //emit this answer (offerObj) back to CLIENT1
