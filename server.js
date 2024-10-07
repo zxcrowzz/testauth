@@ -128,8 +128,9 @@ const resetServerState = () => {
     // Clear remote stream
     if (remoteStream) {
         remoteStream = null;
-    
-};
+    }
+}; // Make sure to close this function properly
+
     socket.on('newAnswer',(offerObj,ackFunction)=>{
         console.log(offerObj);
         //emit this answer (offerObj) back to CLIENT1
