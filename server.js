@@ -71,6 +71,12 @@ io.on('connection',(socket)=>{
         socketId: socket.id,
         userName
     })
+    socket.on('sendMessage', (data) => {
+        console.log('Message received from client:', data.text);
+        
+        // Broadcast the message to all other clients
+        socket.broadcast.emit('newMessage', { text: data.text });
+    });
     socket.on('chat message', (message) => {
         // Broadcast the message to all connected clients
         io.emit('chat message', message);
