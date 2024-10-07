@@ -5,7 +5,7 @@ let isInCall = false;
 //if trying it on a phone, use this instead...
 
 document.querySelector('#user-name').innerHTML = userName;
-let isInCall = false;
+
 
 // Use this if deploying
 const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
