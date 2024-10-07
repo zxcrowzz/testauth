@@ -3,7 +3,11 @@ const password = "x";
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false; 
 //if trying it on a phone, use this instead...
- const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com',{
+ const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
+    reconnectionAttempts: 5,
+    timeout: 10000,
+    transports: ['websocket']
+});
 //const socket = io.connect('https://localhost:8181/',{
     auth: {
         userName,password
