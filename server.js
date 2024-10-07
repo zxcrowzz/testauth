@@ -130,6 +130,11 @@ const resetServerState = () => {
     // Clear remote stream
     if (remoteStream) {
         remoteStream = null;
+
+
+
+    const answerButtons = document.querySelector('#answer'); // Use a class or identifier to select answer buttons
+    answerButtons.forEach(button => button.remove()); // Remove each button from the DOM
     }
 }; // Make sure to close this function properly
 
