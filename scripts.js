@@ -229,34 +229,7 @@ socket.on('hangUp', () => {
     console.log('Remote user hung up');
 });
 
-socket.on('resetUI', ({ hasAnswered }) => {
-    const answerButton = document.querySelector('#answer');
-    const callButton = document.querySelector('#call');
 
-    // Hide the answer button if the user has already answered a call
-    if (hasAnswered) {
-        if (answerButton) {
-            answerButton.remove(); // Remove the button if it exists
-        }
-    } else {
-        // Show the answer button if the user hasn't answered
-        if (answerButton) {
-            answerButton.style.display = 'block'; // Show if it should be visible
-        } else {
-            // If the answer button doesn't exist, you may need to recreate it
-            const newAnswerButton = document.createElement('button');
-            newAnswerButton.id = 'answer';
-            newAnswerButton.textContent = 'Answer Call';
-            newAnswerButton.addEventListener('click', answerCall); // Attach click event
-            document.body.appendChild(newAnswerButton); // Append it to the desired container
-        }
-    }
-
-    // Optionally, manage the call button visibility
-    if (callButton) {
-        callButton.style.display = hasAnswered ? 'none' : 'block'; // Hide if already answered
-    }
-});
 
 socket.on('disconnect', () => {
     resetClientState()
