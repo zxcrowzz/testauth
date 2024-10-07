@@ -41,9 +41,17 @@
     <script src='scripts.js'></script>
     <script src='socketListeners.js'></script>
     <script>
+
+        const socket = io();
+
+         function sendMessageToServer(message) {
+        socket.emit('sendMessage', { text: message });
+}
         // Get references to the input and container
         const input = document.getElementById('inputz');
         const container = document.getElementById('container1');
+
+
 
         // Add an event listener for the Enter key
         input.addEventListener('keypress', function(event) {
@@ -62,6 +70,8 @@
                     
                     // Scroll to the bottom of the container
                     container.scrollTop = container.scrollHeight;
+
+                    sendMessageToServer(message);
                 }
             }
         });
