@@ -8,16 +8,46 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* Make container full width on smaller screens */
+    max-width: 100%;
 }
 
 .video-player {
-    
     width: 100%;  /* Adjust to fit the width of the container */
-    height: auto%; /* Maintain aspect ratio */
-    max-height: 40%; /* Ensure each video takes up no more than half the container height */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 40%; /* Ensure each video takes up no more than 40% of the container height */
     margin: 0px 0; /* Add some vertical margin between videos */
+}
 
-    
+/* Adjustments for smaller screens */
+@media only screen and (max-width: 600px) {
+    .container {
+        width: 100%; /* Make container full width on mobile */
+    }
+
+    .video-player {
+        max-height: 50%; /* Adjust height for smaller screens */
+    }
+
+    #inputz {
+        width: 100%; /* Adjust input width for smaller screens */
+        left: 0;
+        top: 0;
+    }
+
+    #container1 {
+        width: 100%; /* Adjust chat container width for smaller screens */
+        right: 0;
+        top: auto; /* Adjust vertical position for better fit */
+    }
+
+    #call, #hangup {
+        width: 80px; /* Adjust button size for smaller screens */
+    }
+
+    #answer {
+        width: 100px; /* Adjust answer button size for smaller screens */
+    }
 }
 
 #video-wrapper {
@@ -35,67 +65,45 @@
     width: 240px;
     height: 40px;
 }
+
 #answer {
-
-    
-    
     width: 200px;
-
     height: -5px;
-    
 }
 
 #hangup {
-
-
     width: 100px;
 }
+
 #call {
     width: 100px;
-
     top: 0px;
-
     left: 1000px;
-
 }
 
 #inputz {
-
     position: relative;
-
-
     width: 1000px;
-
     z-index: 1;
-
-
     border-radius: 10px;
-
     left: 790px;
-
     top: 860px;
-
-    
-text-align: center;
-
+    text-align: center;
 }
-
 
 /* Container for chat messages */
 #container1 {
-    position: absolute; /* Enable absolute positioning */
-    right: 10px; /* Adjust this value to move it to the right */
-    top: 20px; /* Optional: adjust vertical position */
+    position: absolute;
+    right: 10px;
+    top: 20px;
     border: 1px solid #ccc;
     padding: 10px;
-    height: 300px; /* Fixed height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    height: 300px;
+    overflow-y: auto;
     background-color: #f9f9f9;
     border-radius: 5px;
     width: 1080px;
-    
 }
-
 
 /* Individual message styles */
 #container1 div {
@@ -103,12 +111,7 @@ text-align: center;
     margin: 5px 0;
     padding: 1px;
     border-radius: 4px;
-
-
     color: black;
-
-    
-
     z-index: 2;
 }
 
