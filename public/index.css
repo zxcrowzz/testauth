@@ -1,311 +1,250 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default margin */
+    background-color: #2c2c2c; /* Background color */
+}
+
 #box1 {
     display: flex;
-    position: relative;
-    justify-content: center;
-
-    top: 20px;
-
+    flex-direction: column; /* Align children in a column */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
     background-color: #1b1b1b;
-
-
-    width: 350px;
-
-    height: 450px;
-
+    width: 90%; /* Responsive width */
+    max-width: 350px; /* Maximum width */
+    height: auto; /* Allow height to adjust based on content */
     box-shadow: 1px 1px 5px 4px #070707;
-
-   
-
-   border-radius: 5px;
-
-   left: 40%;
-
-    margin-top: 10%;
+    border-radius: 5px;
+    padding: 20px; /* Inner padding */
 }
 
-
-body {
-    background-color: #2c2c2c;
-    margin: 0;
-}
-#Header{
-    position: absolute;
+#Header {
     color: gray;
-
-
     font-size: 200%;
-
     font-family: Arial, Helvetica, sans-serif;
-
-    font-weight: 1;
-
-    bottom: 75%;
+    margin-bottom: 20px; /* Spacing from the header to inputs */
 }
 
-#InputField {
-position: absolute;
+.input-container {
+    display: flex;
+    align-items: center; /* Center icons with the input */
+    width: 100%; /* Full width */
+    margin-bottom: 15px; /* Spacing between input fields */
+}
 
+.input-container img {
+    margin-right: 10px; /* Space between icon and input */
+    width: 24px; /* Set a consistent width */
+    height: 24px; /* Set a consistent height */
+}
+
+
+#InputField, #InputField1, #InputField2 {
     background-color: #1b1b1b;
-
-   
-
-
-
-
-   height: 10%;
-
-
-   color: black;
-
-   
-
-   outline: none;
-
-   border: none;
-
-
-   border-radius: 5px;
-
-
-   border-bottom: 1px   solid gray;
-
-   
-
-
-   bottom: 66%;
-
-   left: 18%;
+    height: 40px; /* Adjust height as necessary */
+    color: black;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    border-bottom: 1px solid gray;
+    width: 100%; /* Full width */
 }
-#user {
-    position: absolute;
-    width: 40px;
-    height: 40px;
 
+#singup1 {
+    background-color: #1b1b1b;
+    outline: none;
+    border: 2px solid black;
+    height: 40px; /* Adjust height as necessary */
+    color: whitesmoke;
+    opacity: 0.8;
+    width: 100%; /* Full width */
+    cursor: pointer; /* Change cursor on hover */
+}
 
-    bottom: 65%;
+#highlight {
+    color: white;
+    background-color: #1b1b1b;
+    border: none;
+    opacity: 0.8;
+    letter-spacing: 2px;
+    font-size: 12px;
+}
 
-    left: 4%;
+#member {
+    margin-top: 20px; /* Add space above the member text */
+    color: white; /* Text color */
+    text-align: center; /* Center text */
+}
 
-
+/* Optional: Adjust bottom spacing for the container */
+#box1 {
+    margin-bottom: 20px; /* Space from bottom of the viewport */
 }
 
 
-#InputField1 {
+#holder {
+    display: flex;
+    flex-direction: column; /* Align children in a column */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    background-color: #1b1b1b;
+    width: 90%; /* Responsive width */
+    max-width: 350px; /* Maximum width */
+    box-shadow: 1px 1px 5px 4px #070707;
+    border-radius: 5px;
+    padding: 20px; /* Inner padding */
+}
+
+h2 {
+    color: gray;
+    font-size: 200%;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 20px; /* Spacing from the header to inputs */
+    text-align: center; /* Center text */
+}
+
+#VerificationBox {
+    background-color: #1b1b1b;
+    height: 40px; /* Adjust height as necessary */
+    color: white; /* Text color */
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    border-bottom: 1px solid gray;
+    width: 100%; /* Full width */
+    margin-bottom: 15px; /* Spacing below the input */
+    padding: 5px; /* Inner padding for the input */
+}
+
+#Confirm {
+    background-color: #1b1b1b;
+    outline: none;
+    border: 2px solid black;
+    height: 40px; /* Adjust height as necessary */
+    color: whitesmoke;
+    opacity: 0.8;
+    width: 100%; /* Full width */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+/* Optional: Adjust bottom spacing for the holder */
+#holder {
+    margin-bottom: 20px; /* Space from bottom of the viewport */
+}
+
+
+
+.video-player {
+    width: 100%;  /* Adjust to fit the width of the container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 300px; /* Ensure each video takes up no more than half the container height */
+    margin: 0px 0; /* Add some vertical margin between videos */
+}
+
+#videos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#video-wrapper {
+    position: relative;
+}
+#container2 {
+    max-height: 100%;
+    max-width: 100%;
     position: absolute;
+    background-color: #222222;
+    width: 780px;
+    height: 700px;
+    z-index: 3;
+    left: 280px;
+    top: 0px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 3px;
+    overflow: hidden;
+}
+
+
+#container {
+    position: relative;
+    max-height: 100%;
+    max-width: 100%;
+    width: 1050px;
+    height: 700px;
+    background-color: #141414;
+    border-radius: 10px;
+
     
-        background-color: #1b1b1b;
-    
-       
-    
-    
-    
-    
-       height: 10%;
-    
-    
-       color: black;
-    
-       
-    
-       outline: none;
-    
-       border: none;
-    
-    
-       border-radius: 5px;
-    
-    
-       border-bottom: 1px   solid gray;
-    
-       
-    
-    
-       bottom: 55%;
-    
-       left: 18%;
-    }
+}
 
-    #user1 {
-        position: absolute;
-        width: 90px;
-        height: 75px;
-    
-    
-        bottom: 51%;
-    
-        left: -2.8%;
-    
-    
-    }
-    #InputField2 {
-        position: absolute;
-        
-            background-color: #1b1b1b;
-        
-           
-        
-        
-        
-        
-           height: 10%;
-        
-        
-           color: black;
-        
-           
-        
-           outline: none;
-        
-           border: none;
-        
-        
-           border-radius: 5px;
-        
-        
-           border-bottom: 1px   solid gray;
-        
-           
-        
-        
-           bottom: 44%;
-        
-           left: 18%;
-      
-        }
-    
-        #user2 {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-        
-        
-            bottom: 45%;
-        
-            left: 4.5%;
-        
-        
-        }
-        #singup1 {
-            position: absolute;
-       
-        background-color: #1b1b1b;
-        outline: none;
-        
-        border: 2px solid black;
+#headimage {
+    max-height: 100%;
+    max-width: 100%;
+    position: relative;
+    width: 80px;
+    height: 50px;
+    background-image: url('https://banner2.cleanpng.com/20180408/yae/avglbsunl.webp'); /* Ensure your image path is correct */
+    background-size: cover; /* Ensure the image covers the entire element */
+    background-blend-mode: multiply; /* Blend the image with the background */
+    background-color: #141414;
+    top: 15px;
+    left: 0px;
+    right: 0;
+    bottom: 0;
+}
 
-        height: 27px;
-
-        color:whitesmoke;
-
-        opacity: .8;
-
-
-        width: 130px;
-
-        bottom: 30%;
-
-        left: 85px;
-
-        }
-        #highlight  {
-
-
-            color: white;
-            background-color: #1b1b1b;
-            border: none;
-            opacity: .8;
-
-            letter-spacing: 2px;
-
-            font-size: 12px;
-        }
-
-        #member {
-            position: absolute;
-            bottom: 20%;
-        }
-
-        .redclass {
+#h11 {
+    max-height: 100%;
+    max-width: 100%;
+    position: relative;
+    width: 200px;
+    height: 100px;
+    left: 75px;
+    top: 5px;
+}
 
 
 
-            border: 1px red;
+#logout {
+    max-height: 100%;
+    max-width: 100%;
+    height: 30px;
+    width: 100px;
+    border-radius: 10px;
+    position: relative;
+    left: 930px;
+    bottom: -530px;
+    z-index: 4;
+
+    top: 0px;
+}
+
+#inputz {
+    max-height: 100%;
+    max-width: 100%;
+    margin-top: 573px;
+    width: 1000px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #000;
+}
+
+#waiting {
 
 
-            
-            animation: .5s;
 
-        }
+    position: absolute;
 
 
-        #cover {
-            position: absolute;
-            top: 220px;
-            right: 120px;
-
-            width: 20px;
-
-            height: 20px;
-
-            border-radius: 8px;
-
-            background-color: #1b1b1b;
-
-            border: 1px solid;
-
-
-        }
-
-        #VerificationBox {
-
-            position: absolute;
-            left: 6%;
-        
-            top: 40%;
-        
-            width: 300px;
-        
-            height: 50px;
-        
-            border-radius: 10px;
-        }
-        
-        #Confirm {
-        
-            position: absolute;
-            left: 25%;
-        
-            top: 80%;
-        
-            height: 15%;
-        
-            width: 50%;
-        
-        
-        }
-        
-        #holder {
-        
-            display: flex;
-            position: relative;
-            justify-content: center;
-        
-            top: 100px;
-        
-            background-color: #1b1b1b;
-        
-        
-            width: 350px;
-        
-            height: 200px;
-        
-            box-shadow: 1px 1px 5px 4px #070707;
-        
-           
-        
-           border-radius: 5px;
-        
-           left: 40%;
-        
-            margin-top: 10%;
-        }
+    margin-top: 10000px;
+}
