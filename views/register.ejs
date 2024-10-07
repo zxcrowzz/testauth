@@ -1,47 +1,36 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css">
+    <title>Registration Page</title>
+</head>
+<body>
+    <div id="box1">
+        <h2 id="Header">Sign up</h2>
+        <form action="/register" method="post">
+            <div class="input-container">
+                <img id="user" src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png" alt="Username Icon">
+                <input id="InputField" placeholder="Username" name="username" required>
+            </div>
+            <div class="input-container">
+                <img id="user1" src="https://endlessicons.com/wp-content/uploads/2012/12/email-icon-614x460.png" alt="Email Icon">
+                <input id="InputField1" placeholder="Email" name="email" required>
+            </div>
+            <div class="input-container">
+                <img id="user2" src="https://icons.veryicon.com/png/o/object/material-design-icons/lock-76.png" alt="Password Icon">
+                <input type="password" id="InputField2" placeholder="Password" name="password" required>
+            </div>
+            <button id="singup1" type="submit">SIGN UP</button>
+        </form>
 
-
-<html>
-<link rel="stylesheet" href="/index.css">
-<div id = "box1">
-
-<h2 id ="Header">
-Sign up
-
-</h2>
-<form action="/register" method="post">
-<input id = "InputField" placeholder="Username" name = "username">
-
-<img id = "user" src = "https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png">
-<input id = "InputField1" placeholder="Email" name = "email">
-<img id = "user1" src = "https://endlessicons.com/wp-content/uploads/2012/12/email-icon-614x460.png">
-<input type="password" id = "InputField2" placeholder="Password" name = "password">
-<img id = "user2" src = "https://icons.veryicon.com/png/o/object/material-design-icons/lock-76.png">
-
-<button id = "singup1">
-    SIGN UP
-</button>
-</form>    
-
-
-
-<h3 id = "member">
-<form action="/redirect1" method="post">
-    Already have an account?<button id = "highlight"> Sign   in</button>
-</form>
-
-</h3>
-
-
-
-
-
-
-
-
-
-</div>
-
-
-
+        <h3 id="member">
+            Already have an account?
+            <form action="/redirect1" method="post" style="display:inline;">
+                <button id="highlight" type="submit">Sign in</button>
+            </form>
+        </h3>
+    </div>
+</body>
 </html>
