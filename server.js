@@ -29,22 +29,21 @@ const { v4: uuidV4 } = require('uuid');
 
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer(app);
+const expressServer = app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 3000}`);
+});
 //create our socket.io server... it will listen to our express port
-const io = socketio(expressServer,{
+const io = socketio(expressServer, {
     cors: {
         origin: [
-            "https://localhost",
-             'https://10.0.0.66' //if using a phone or another computer
+            "https://your-heroku-app.herokuapp.com",
+            'https://10.0.0.66' // if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
 });
 
-const PORT = process.env.PORT || 3000;
-expressServer.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+
 //offers will contain {}
 const offers = [
     // offererUserName
