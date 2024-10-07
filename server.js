@@ -25,24 +25,23 @@ const { v4: uuidV4 } = require('uuid');
 //we generated them with mkcert
 // $ mkcert create-ca
 // $ mkcert create-cert
-
-
+const key = fs.readFileSync('cert.key');
+const cert = fs.readFileSync('cert.crt');
+let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 3000}`);
-});
+const expressServer = https.createServer({key, cert}, app);
 //create our socket.io server... it will listen to our express port
-const io = socketio(expressServer, {
+const io = socketio(expressServer,{
     cors: {
         origin: [
-            'https://10.0.0.66',
-            "https://r3dxx-9ce6f110c87b.herokuapp.com"
+            "https://localhost",
+             'https://10.0.0.66' //if using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
 });
-
+expressServer.listen(8181);
 
 //offers will contain {}
 const offers = [
@@ -58,6 +57,7 @@ const connectedSockets = [
 ]
 
 io.on('connection',(socket)=>{
+    connectedClients++;
     // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
@@ -74,10 +74,25 @@ io.on('connection',(socket)=>{
         // Broadcast the message to all connected clients
         io.emit('chat message', message);
     });
+    socket.on('hangUp', () => {
+        console.log('User hung up: ' + socket.id);
+        // Broadcast the hang-up event to all other connected clients
+        socket.broadcast.emit('hangUp');
+    });
+   
 
     socket.on('disconnect', () => {
+        connectedClients--;
         console.log('User disconnected');
+        socket.broadcast.emit('userDisconnected', { userId: socket.id });
+        if (connectedClients === 0) {
+            // Trigger reset logic when no clients are connected
+            resetServerState()
+        }
     });
+
+
+
     //a new client has joined. If there are any offers available,
     //emit them out
     if(offers.length){
@@ -97,7 +112,24 @@ io.on('connection',(socket)=>{
         //send out to all connected sockets EXCEPT the caller
         socket.broadcast.emit('newOfferAwaiting',offers.slice(-1))
     })
+const resetServerState = () => {
+    console.log('Resetting server state...');
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
 
+    // Stop and clear local stream
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+
+    // Clear remote stream
+    if (remoteStream) {
+        remoteStream = null;
+    
+};
     socket.on('newAnswer',(offerObj,ackFunction)=>{
         console.log(offerObj);
         //emit this answer (offerObj) back to CLIENT1
