@@ -115,6 +115,7 @@ io.on('connection',(socket)=>{
     })
 const resetServerState = () => {
     console.log('Resetting server state...');
+    
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;
@@ -129,8 +130,9 @@ const resetServerState = () => {
     // Clear remote stream
     if (remoteStream) {
         remoteStream = null;
-    
-};
+    } // Corrected closing brace here
+}; // This is the closing brace for the function
+
     socket.on('newAnswer',(offerObj,ackFunction)=>{
         console.log(offerObj);
         //emit this answer (offerObj) back to CLIENT1
