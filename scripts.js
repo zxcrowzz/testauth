@@ -28,24 +28,9 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: "turn:global.relay.metered.ca:80",
-            username: "5736356acd7dcf91086ca11f",
-            credential: "PYJGsKfFnlvnxoPR",
-        },
-        {
-            urls: "turn:global.relay.metered.ca:80?transport=tcp",
-            username: "5736356acd7dcf91086ca11f",
-            credential: "PYJGsKfFnlvnxoPR",
-        },
-        {
-            urls: "turn:global.relay.metered.ca:443",
-            username: "5736356acd7dcf91086ca11f",
-            credential: "PYJGsKfFnlvnxoPR",
-        },
-        {
-            urls: "turns:global.relay.metered.ca:443?transport=tcp",
-            username: "5736356acd7dcf91086ca11f",
-            credential: "PYJGsKfFnlvnxoPR",
+            urls: 'turn:r3dxx-9ce6f110c87b.herokuapp.com:3478', // Replace with your TURN server address
+            username: 'pantsbro4',                  // Your TURN server username
+            credential: 'tpc1100ppz#44AAlop'                 // Your TURN server password
         }
     ]
 };
