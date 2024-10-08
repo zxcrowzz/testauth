@@ -190,7 +190,9 @@ const addNewIceCandidate = iceCandidate=>{
 
 
 
+function appendMessage(message) {
 
+}
 
 // Function to handle the hang-up action
 function hangUp() {
