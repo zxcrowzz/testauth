@@ -28,9 +28,9 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: 'turn:r3dxx-9ce6f110c87b.herokuapp.com:3478', 
-            username: 'pantsbro4',                 
-            credential: 'tpc1100ppz#44AAlop'                 
+            urls: 'turn:relay1.expressturn.com:3478', 
+            username: 'ef0645F7PFI1NDP4KH',                 
+            credential: 'BNeVubliu1aMKEpN'                 
         }
     ]
 };
