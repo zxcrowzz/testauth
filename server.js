@@ -73,6 +73,9 @@ io.on('connection',(socket)=>{
     })
 
     socket.emit('chatmessage', 'hello')
+    socket.on('serverMessage', message => {
+    socket.broadcast.emit('chatmessage', message)
+    });
     socket.on('sendMessage', (data) => {
         console.log('Message received from client:', data.text);
         
