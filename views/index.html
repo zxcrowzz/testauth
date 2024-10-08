@@ -59,7 +59,7 @@
                     const messageDiv = document.createElement('div');
                     messageDiv.textContent = message;
                     container.appendChild(messageDiv);
-                    
+                    socket.emit('serverMessage', message);
                     // Clear the input
                     input.value = '';
                     
