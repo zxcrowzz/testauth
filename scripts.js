@@ -205,7 +205,10 @@ function hangUp() {
     // Emit hang-up event to the signaling server
     socket.emit('hangUp');
 }
+socket.on('chatmessage' , data => {
 
+ console.log(data)
+});
 // Listen for the hang-up event from the signaling server
 socket.on('hangUp', () => {
     if (remoteVideoEl.srcObject) {
