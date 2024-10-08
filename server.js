@@ -72,7 +72,7 @@ io.on('connection',(socket)=>{
         userName
     })
 
-    socket.emit('chatmessage')
+    socket.emit('chatmessage', 'hello')
     socket.on('sendMessage', (data) => {
         console.log('Message received from client:', data.text);
         
