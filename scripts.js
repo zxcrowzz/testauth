@@ -28,7 +28,7 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: 'turn:r3dxx-9ce6f110c87b.herokuapp.com:3478', 
+            urls: 'turn:73.190.80.72:3478', 
             username: 'pantsbro4',                 
             credential: 'tpc1100ppz#44AAlop'                 
         }
