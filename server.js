@@ -431,7 +431,15 @@ app.get('/', (req, res) => {
         res.redirect('/login');
     }
 });
+app.post('/redirect', (req,res) => {
+res.redirect('/register')
 
+});
+
+app.post('/redirect1', (req,res) => {
+    res.redirect('/login')
+    
+});
 // Room route
 app.get('/:index.html:', (req, res) => {
     res.render('index', { roomId: req.params.room });
