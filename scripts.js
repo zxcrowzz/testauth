@@ -28,9 +28,9 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: 'turn:r3dxx-9ce6f110c87b.herokuapp.com:3478', // Replace with your TURN server address
-            username: 'pantsbro4',                  // Your TURN server username
-            credential: 'tpc1100ppz#44AAlop'                 // Your TURN server password
+            urls: 'turn:r3dxx-9ce6f110c87b.herokuapp.com:3478', 
+            username: 'pantsbro4',                 
+            credential: 'tpc1100ppz#44AAlop'                 
         }
     ]
 };
