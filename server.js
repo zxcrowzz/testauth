@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
-
+const PendingUser = require('./models/PendingUser'); // Adjust the path as necessary
 const path = require("path");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
