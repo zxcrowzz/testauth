@@ -121,6 +121,7 @@ io.on('connection',(socket)=>{
         socket.broadcast.emit('newOfferAwaiting',offers.slice(-1))
     })
 const resetServerState = () => {
+    offers = [];
     console.log('Resetting server state...');
     if (peerConnection) {
         peerConnection.close();
