@@ -44,7 +44,7 @@ const io = socketio(expressServer,{
 });
 
 //offers will contain {}
-const offers = [
+let offers = [
     // offererUserName
     // offer
     // offerIceCandidates
@@ -93,6 +93,7 @@ io.on('connection',(socket)=>{
         console.log('User disconnected');
         socket.broadcast.emit('userDisconnected', { userId: socket.id });
         if (connectedClients === 0) {
+            offers = [];
             // Trigger reset logic when no clients are connected
             io.emit('lastUserLeft');
             console.log('Last user left, notifying all clients.');
