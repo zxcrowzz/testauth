@@ -71,6 +71,8 @@ io.on('connection',(socket)=>{
         socketId: socket.id,
         userName
     })
+
+    socket.emit('chatmessage')
     socket.on('sendMessage', (data) => {
         console.log('Message received from client:', data.text);
         
