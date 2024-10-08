@@ -10,7 +10,7 @@ let isInCall = false;
         userName,password
     }
 })
-
+const messageDiv = document.getElementById('container1');
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
 
@@ -191,7 +191,9 @@ const addNewIceCandidate = iceCandidate=>{
 
 
 function appendMessage(message) {
-
+ const messageDiv = document.createElement('div');
+ messageDiv.textContent = message;
+ container.appendChild(messageDiv);
 }
 
 // Function to handle the hang-up action
