@@ -212,6 +212,8 @@ function hangUp() {
 socket.on('chatmessage' , data => {
 
  console.log(data)
+
+ appendMessage(data)
 });
 // Listen for the hang-up event from the signaling server
 socket.on('hangUp', () => {
