@@ -140,7 +140,7 @@ h2 {
 .video-player {
     width: 100%;  /* Adjust to fit the width of the container */
     height: auto; /* Maintain aspect ratio */
-    max-height: 300px; /* Ensure each video takes up no more than half the container height */
+    max-height: 280px; /* Ensure each video takes up no more than half the container height */
     margin: 0px 0; /* Add some vertical margin between videos */
 }
 
@@ -231,12 +231,19 @@ h2 {
     max-height: 100%;
     max-width: 100%;
     margin-top: 573px;
-    width: 1000px;
+    width: 270px;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
     background-color: #fff;
     color: #000;
+
+    position: relative;
+
+    left: -100px;
+
+    top: 25px;
+    
 }
 
 #waiting {
@@ -247,4 +254,26 @@ h2 {
 
 
     margin-top: 10000px;
+}
+
+
+#container1 {
+    position: relative;
+
+    top: -545px;
+    right: -5px;
+
+    z-index: 5;
+
+
+    width: 270px;        
+    height: 520px;        
+    overflow-y: scroll;   
+    border: 1px solid #000000; 
+
+    padding: 2px;
+}
+
+#container1::-webkit-scrollbar {
+    display: none; 
 }
