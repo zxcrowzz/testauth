@@ -134,7 +134,7 @@ io.on('connection',(socket)=>{
         socket.emit('availableOffers',offers);
     }
     
-  socket.on('newOffer', ({ offer, room }) => {
+ socket.on('newOffer', ({ offer, room }) => {
     const newOffer = {
         offererUserName: userName,
         offer: offer,
