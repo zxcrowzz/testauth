@@ -1,4 +1,4 @@
-/on connection get all available offers and call createOfferEls
+
 socket.on('availableOffers',offers=>{
     console.log(offers)
     createOfferEls(offers)
