@@ -105,29 +105,29 @@ io.on('connection', (socket) => {
 
 
    socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-    if (!answer.offererUserName) {
-        console.log("Answer does not contain offererUserName");
-        return;
-    }
+        if (!answer.offererUserName) {
+            console.log("Answer does not contain offererUserName");
+            return;
+        }
 
-    const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
-    if (!socketToAnswer) {
-        console.log("No matching socket for answer");
-        return;
-    }
+        const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
+        if (!socketToAnswer) {
+            console.log("No matching socket for answer");
+            return;
+        }
 
-    const socketIdToAnswer = socketToAnswer.socketId;
-    const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
-    if (!offerToUpdate) {
-        console.log("No OfferToUpdate");
-        return;
-    }
+        const socketIdToAnswer = socketToAnswer.socketId;
+        const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
+        if (!offerToUpdate) {
+            console.log("No OfferToUpdate");
+            return;
+        }
 
-    ackFunction(offerToUpdate.offerIceCandidates);
-    offerToUpdate.answer = answer.answer;
-    offerToUpdate.answererUserName = userName;
-    socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-});
+        ackFunction(offerToUpdate.offerIceCandidates);
+        offerToUpdate.answer = answer.answer;
+        offerToUpdate.answererUserName = userName;
+        socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
+    });
 
 
 
