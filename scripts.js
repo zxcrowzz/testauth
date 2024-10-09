@@ -3,7 +3,7 @@ const password = "x";
 let hasAnsweredCall = false;
 let currentRoom = null; 
 document.querySelector('#user-name').innerHTML = userName;
-let isInCall = false; 
+
 //if trying it on a phone, use this instead...
  const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com',{
 //const socket = io.connect('https://localhost:8181/',{
