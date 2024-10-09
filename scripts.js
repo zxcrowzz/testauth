@@ -92,7 +92,7 @@ const createPeerConnection = async (offerObj) => {
 const call = async () => {
     try {
         await fetchUserMedia();
-        await createPeerConnection();
+        await createPeerConnection(null); // Pass null to indicate no offer
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         didIOffer = true;
