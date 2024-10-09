@@ -129,9 +129,15 @@ function joinRoom(room) {
 
 // Handle ICE candidates from the signaling server
 socket.on('receivedIceCandidateFromServer', iceCandidate => {
-    peerConnection.addIceCandidate(new RTCIceCandidate(iceCandidate))
-        .catch(error => console.error('Error adding received ICE candidate', error));
+    if (peerConnection) {
+        peerConnection.addIceCandidate(new RTCIceCandidate(iceCandidate))
+            .catch(error => console.error('Error adding received ICE candidate', error));
+    } else {
+        console.warn('Received ICE candidate but peer connection is undefined. Buffering the candidate.');
+        iceCandidateQueue.push(iceCandidate); // Buffering candidates if peerConnection is not yet initialized
+    }
 });
+
 
 // Hang-up function
 function hangUp() {
