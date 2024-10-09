@@ -137,7 +137,10 @@ const resetClientState = () => {
     isInCall = false;
     console.log('Client state reset');
 };
-
+async function initiateCall() {
+    console.log('Call initiated');
+    await call(); // Assuming call() is defined in your code
+}
 // Event listeners
 document.getElementById('join-button').addEventListener('click', () => {
     const roomId = document.getElementById('room-input').value.trim();
