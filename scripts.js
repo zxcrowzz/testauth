@@ -243,20 +243,19 @@ socket.on('disconnect', () => {
 
 // Add event listener to the hang-up button
 
-joinRoomButton.addEventListener('click' () => {
-const roomName = roomInput.value;
- socket.emit('create_join', roomName);
- 
-});
-socket.on('room-joined', (roomName => {
-callButton.disabled = true
-
+joinRoomButton.addEventListener('click', () => {
+    const roomName = roomInput.value;
+    socket.emit('create_join', roomName);
 });
 
-socket.on('room_user_count' , (count) => {
-callButton.disabled = (count <2);
-
+socket.on('room-joined', (roomName) => {
+    callButton.disabled = true;
 });
+
+socket.on('room_user_count', (count) => {
+    callButton.disabled = (count < 2);
+});
+
 
 document.getElementById('hangup').addEventListener('click', hangUp);
 
