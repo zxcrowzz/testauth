@@ -95,7 +95,18 @@ const call = async () => {
         console.error('Error during call setup:', error);
     }
 };
+async function answerOffer(offerObj) {
+    console.log('Answering offer from:', offerObj.offererUserName);
+    await createPeerConnection(offerObj);
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
 
+    socket.emit('newAnswer', {
+        answer,
+        room: currentRoom,
+        offererUserName: offerObj.offererUserName
+    });
+}
 function joinRoom(room) {
     if (currentRoom) {
         socket.emit('leaveRoom', currentRoom);
@@ -110,18 +121,7 @@ function joinRoom(room) {
             call();
         }
     });
-async function answerOffer(offerObj) {
-    console.log('Answering offer from:', offerObj.offererUserName);
-    await createPeerConnection(offerObj);
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
 
-    socket.emit('newAnswer', {
-        answer,
-        room: currentRoom,
-        offererUserName: offerObj.offererUserName
-    });
-}
     socket.on('offerReceived', offer => {
         answerOffer(offer);
     });
