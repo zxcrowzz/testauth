@@ -93,21 +93,20 @@ const call = async () => {
     try {
         await fetchUserMedia();
         await createPeerConnection();
-
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         didIOffer = true;
 
-        // Emit the new offer with the offererUserName
         socket.emit('newOffer', { 
             offer, 
             room: currentRoom, 
-            offererUserName: userName // Add this line
+            offererUserName: userName 
         });
     } catch (error) {
         console.error('Error during call setup:', error);
     }
 };
+
 
 async function answerOffer(offerObj) {
     console.log('Answering offer from:', offerObj.offererUserName);
