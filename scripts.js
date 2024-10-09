@@ -86,7 +86,7 @@ const answerOffer = async (offerObj) => {
 
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
-        socket.emit('newAnswer', { answer, room: currentRoom });
+        socket.emit('newAnswer', { answer, room: currentRoom, offererUserName: offerObj.offererUserName });
     } catch (error) {
         console.error('Error answering offer:', error);
     }
