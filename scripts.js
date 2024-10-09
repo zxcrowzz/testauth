@@ -11,7 +11,9 @@ let isInCall = false;
 })
 
 
-
+const joinRoomButton = document.getElementById('join-button');
+const roomInput = document.getElementById('room-input');
+const callButton = document.getElementById('call');
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
 
@@ -241,8 +243,20 @@ socket.on('disconnect', () => {
 
 // Add event listener to the hang-up button
 
+joinRoomButton.addEventListener('click' () => {
+const roomName = roomInput.value;
+ socket.emit('create_join', roomName);
+ 
+});
+socket.on('room-joined', (roomName => {
+callButton.disabled = true
 
+});
 
+socket.on('room_user_count' , (count) => {
+callButton.disabled = (count <2);
+
+});
 
 document.getElementById('hangup').addEventListener('click', hangUp);
 
