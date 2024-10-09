@@ -71,7 +71,25 @@ io.on('connection',(socket)=>{
         socketId: socket.id,
         userName
     })
+    socket.on('joinRoom', (room) => {
+        socket.join(room);
+        console.log(`${socket.id} joined room: ${room}`);
+    });
 
+    socket.on('leaveRoom', (room) => {
+        socket.leave(room);
+        console.log(`${socket.id} left room: ${room}`);
+    });
+
+    socket.on('newOffer', ({ offer, room }) => {
+        socket.to(room).emit('offerReceived', { offer, from: socket.id });
+    });
+
+    socket.on('newAnswer', ({ answer, room }) => {
+        socket.to(room).emit('answerReceived', { answer, from: socket.id });
+    });
+
+    // Handle other events...
     socket.emit('chatmessage', 'hello')
     socket.on('serverMessage', message => {
     socket.broadcast.emit('chatmessage', message)
