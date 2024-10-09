@@ -37,7 +37,8 @@ const fetchUserMedia = async () => {
 const createPeerConnection = async (offerObj) => {
     const configuration = {
         iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' }, // STUN server
+            { urls: 'stun:stun.l.google.com:19302' },
+                     'stun:stun1.l.google.com:19302'
             {
                 urls: 'turn:your-turn-server-url', // Replace with your TURN server URL
                 username: 'your-username', // Replace with your TURN username
