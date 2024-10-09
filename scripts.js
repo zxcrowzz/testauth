@@ -47,10 +47,9 @@ const call = async (e) => {
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         didIOffer = true;
-        socket.emit('newOffer', offer); // Send offer to signaling server
+        socket.emit('newOffer', { offer, room: currentRoom }); // Send offer to specific room
     } catch (err) {
         console.error('Error during call setup:', err);
-        // Optionally display an error message to the user
     }
 };
 
@@ -60,19 +59,17 @@ const answerOffer = async (offerObj) => {
         isInCall = true;
         await fetchUserMedia();
         await createPeerConnection(offerObj);
-        
+
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
 
         offerObj.answer = answer; // Add the answer to the offer object
-        const offerIceCandidates = await socket.emitWithAck('newAnswer', offerObj);
+        const offerIceCandidates = await socket.emitWithAck('newAnswer', { answer, room: currentRoom });
         offerIceCandidates.forEach(c => {
             peerConnection.addIceCandidate(c);
-            console.log("Added Ice Candidate");
         });
     } catch (err) {
         console.error('Error answering offer:', err);
-        // Optionally display an error message to the user
     }
 };
 const addAnswer = async (offerObj) => {
@@ -80,13 +77,12 @@ const addAnswer = async (offerObj) => {
         await peerConnection.setRemoteDescription(offerObj.answer);
         const answerButton = document.getElementById('answer');
         if (answerButton) {
-            answerButton.remove(); // Remove the answer button if the call is answered
+            answerButton.remove();
         }
     } catch (err) {
         console.error('Error setting remote description:', err);
     }
 };
-
 const fetchUserMedia = ()=>{
     return new Promise(async(resolve, reject)=>{
         try{
@@ -275,7 +271,13 @@ function initiateCall(user) {
     call(); // Assuming this starts the call process
 }
 
-
+function joinRoom(room) {
+    if (currentRoom) {
+        socket.emit('leaveRoom', currentRoom); // Leave previous room if exists
+    }
+    currentRoom = room;
+    socket.emit('joinRoom', room);
+}
 document.querySelector("#answer").addEventListener('click', function () {
 
     this.remove()
