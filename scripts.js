@@ -57,30 +57,26 @@ let peerConfiguration = {
 
 
 //when a client initiates a call
-const call = async e=>{
-    
+const call = async e => {
     await fetchUserMedia();
-
-    //peerConnection is all set with our STUN servers sent over
     await createPeerConnection();
 
-    //create offer time!
-    try{
-        console.log("Creating offer...")
+    try {
+        console.log("Creating offer...");
         const offer = await peerConnection.createOffer();
         console.log(offer);
-        peerConnection.setLocalDescription(offer);
+        await peerConnection.setLocalDescription(offer);
         didIOffer = true;
-          socket.emit('newOffer', {
+
+        socket.emit('newOffer', {
             offer,
             room: currentRoom, // Include the room information
-            offererUserName: userName // Include the userName for identification
+            offererUserName: userName
         });
-    }catch(err){
-        console.log(err)
+    } catch (err) {
+        console.log(err);
     }
-
-}
+};
 
 const answerOffer = async(offerObj)=>{
     isInCall = true
