@@ -12,7 +12,6 @@ const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
     }
 });
 
-
 const messageDiv = document.getElementById('container1');
 let localStream;
 let remoteStream;
@@ -87,7 +86,8 @@ const createPeerConnection = async (offerObj) => {
         peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
             .catch(error => console.error('Error adding buffered ICE candidate', error));
     });
-    iceCandidateQueue = []; // Clear the 
+    iceCandidateQueue = []; // Clear the queue
+};
 
 const call = async () => {
     try {
@@ -108,6 +108,7 @@ const call = async () => {
         console.error('Error during call setup:', error);
     }
 };
+
 async function answerOffer(offerObj) {
     console.log('Answering offer from:', offerObj.offererUserName);
     await createPeerConnection(offerObj);
@@ -120,6 +121,7 @@ async function answerOffer(offerObj) {
         offererUserName: offerObj.offererUserName
     });
 }
+
 function joinRoom(room) {
     if (currentRoom) {
         socket.emit('leaveRoom', currentRoom);
@@ -151,7 +153,6 @@ socket.on('receivedIceCandidateFromServer', iceCandidate => {
     }
 });
 
-
 // Hang-up function
 function hangUp() {
     if (!isInCall) {
@@ -178,10 +179,7 @@ const resetClientState = () => {
     isInCall = false;
     console.log('Client state reset');
 };
-async function initiateCall() {
-    console.log('Call initiated');
-    await call(); // Assuming call() is defined in your code
-}
+
 // Event listeners
 document.getElementById('join-button').addEventListener('click', () => {
     const roomId = document.getElementById('room-input').value.trim();
