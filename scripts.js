@@ -1,3 +1,17 @@
+const userName = "Pantsbro"+Math.floor(Math.random() * 100000)
+const password = "x";
+document.querySelector('#user-name').innerHTML = userName;
+let isInCall = false; 
+//if trying it on a phone, use this instead...
+ const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com',{
+//const socket = io.connect('https://localhost:8181/',{
+    auth: {
+        userName,password
+    }
+})
+
+
+
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
 
