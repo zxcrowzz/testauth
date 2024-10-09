@@ -94,10 +94,15 @@ io.on('connection', (socket) => {
     });
 
     // Handle new offers and answers
-    socket.on('newOffer', ({ offer, room }) => {
-        socket.to(room).emit('offerReceived', { offer, from: socket.id });
-        offererUserName: socket.handshake.auth.userName // Add this line
-    });
+   socket.on('newOffer', ({ offer, room }) => {
+    const offerObj = {
+        offer,
+        from: socket.id,
+        offererUserName: socket.handshake.auth.userName
+    };
+    socket.to(room).emit('offerReceived', offerObj);
+});
+
 
    socket.on('newAnswer', ({ answer, room }, ackFunction) => {
     if (!answer.offererUserName) {
