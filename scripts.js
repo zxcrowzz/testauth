@@ -157,4 +157,4 @@ document.getElementById('join-button').addEventListener('click', () => {
 document.getElementById('hangup').addEventListener('click', hangUp);
 
     this.remove()
-})
+});
