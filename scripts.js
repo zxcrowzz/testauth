@@ -102,6 +102,9 @@ const call = async () => {
 
 async function answerOffer(offerObj) {
     console.log('Answering offer from:', offerObj.offererUserName);
+    if (peerConnection.signalingState === 'stable') {
+        console.log('Peer connection already stable.');
+        return;
     
     // Create the peer connection
     await createPeerConnection(offerObj);
