@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
-
+const iceCandidateBuffer = new Map();
 const PendingUser = require('./models/PendingUser'); // Adjust the path as necessary
 const path = require("path");
 const bcrypt = require("bcrypt");
@@ -91,21 +91,23 @@ io.on('connection', (socket) => {
     });
 
     socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-        const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
-        const socketIdToAnswer = socketToAnswer ? socketToAnswer.socketId : null;
-        const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
+    // ... existing code ...
 
-        if (socketIdToAnswer && offerToUpdate) {
-            ackFunction(offerToUpdate.offerIceCandidates);
-            offerToUpdate.answer = answer.answer;
-            offerToUpdate.answererUserName = userName;
-            socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-        } else {
-            console.log('Error processing answer:', answer);
-        }
-    });
+    if (socketIdToAnswer && offerToUpdate) {
+        ackFunction(offerToUpdate.offerIceCandidates);
+        offerToUpdate.answer = answer.answer;
+        offerToUpdate.answererUserName = userName;
+        socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
+        
+        // Process any buffered candidates for both users
+        processCandidateBuffer(offerToUpdate.offererUserName, socketIdToAnswer);
+        processCandidateBuffer(userName, socket.id);
+    } else {
+        console.log('Error processing answer:', answer);
+    }
+});
 
-    const iceCandidateBuffer = new Map();
+    
 
 socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
     const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
@@ -406,3 +408,12 @@ app.get('/:room.html', (req, res) => {
 app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render("register.ejs");
 });
+function processCandidateBuffer(userName, socketId) {
+    if (iceCandidateBuffer.has(userName)) {
+        console.log('Processing buffered ICE candidates for:', userName);
+        iceCandidateBuffer.get(userName).forEach(candidate => {
+            socket.to(socketId).emit('receivedIceCandidateFromServer', candidate);
+        });
+        iceCandidateBuffer.delete(userName);
+    }
+}
