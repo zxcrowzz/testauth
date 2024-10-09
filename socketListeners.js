@@ -1,6 +1,6 @@
 
 //on connection get all available offers and call createOfferEls
-let currentRoom = null;
+
 
 // When connected, get all available offers for the current room
 socket.on('availableOffers', (offers) => {
