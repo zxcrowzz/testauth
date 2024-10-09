@@ -1,48 +1,34 @@
+/on connection get all available offers and call createOfferEls
+socket.on('availableOffers',offers=>{
+    console.log(offers)
+    createOfferEls(offers)
+})
 
-//on connection get all available offers and call createOfferEls
+//someone just made a new offer and we're already here - call createOfferEls
+socket.on('newOfferAwaiting',offers=>{
+    createOfferEls(offers)
+})
 
+socket.on('answerResponse',offerObj=>{
+    console.log(offerObj)
+    addAnswer(offerObj)
+})
 
-// When connected, get all available offers for the current room
-socket.on('availableOffers', (offers) => {
-    console.log(offers);
-    if (currentRoom) {
-        createOfferEls(offers.filter(o => o.room === currentRoom));
-    }
-});
+socket.on('receivedIceCandidateFromServer',iceCandidate=>{
+    addNewIceCandidate(iceCandidate)
+    console.log(iceCandidate)
+})
 
-// Someone just made a new offer and we're already in the room
-socket.on('newOfferAwaiting', (offers) => {
-    if (currentRoom) {
-        createOfferEls(offers.filter(o => o.room === currentRoom));
-    }
-});
-
-// Listen for answer responses
-socket.on('answerResponse', (offerObj) => {
-    if (offerObj.room === currentRoom) {
-        console.log(offerObj);
-        addAnswer(offerObj);
-    }
-});
-
-// Listen for ICE candidates from the server
-socket.on('receivedIceCandidateFromServer', (iceCandidate) => {
-    addNewIceCandidate(iceCandidate);
-    console.log(iceCandidate);
-});
-
-// Create offer elements for the available offers
-function createOfferEls(offers) {
-    clearAnswerButtons(); // Clear old buttons before adding new ones
+function createOfferEls(offers){
+    //make green answer button for this new offer
     const answerEl = document.querySelector('#answer');
-    
-    offers.forEach(o => {
+    offers.forEach(o=>{
         console.log(o);
         const newOfferEl = document.createElement('div');
-        newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
-        newOfferEl.addEventListener('click', () => answerOffer(o));
+        newOfferEl.innerHTML = <button class="btn btn-success col-1">Answer ${o.offererUserName}</button>
+        newOfferEl.addEventListener('click',()=>answerOffer(o))
         answerEl.appendChild(newOfferEl);
-    });
+    })
 }
 const callButton = document.querySelector('#Hangup'); // Select the button by its ID
 callButton.disabled = true;
