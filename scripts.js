@@ -38,59 +38,54 @@ let peerConfiguration = {
 
 
 //when a client initiates a call
-const call = async e=>{
-    
-    await fetchUserMedia();
+const call = async (e) => {
+    try {
+        await fetchUserMedia();
+        await createPeerConnection();
 
-    //peerConnection is all set with our STUN servers sent over
-    await createPeerConnection();
-
-    //create offer time!
-    try{
-        console.log("Creating offer...")
+        console.log("Creating offer...");
         const offer = await peerConnection.createOffer();
-        console.log(offer);
-        peerConnection.setLocalDescription(offer);
+        await peerConnection.setLocalDescription(offer);
         didIOffer = true;
-        socket.emit('newOffer',offer); //send offer to signalingServer
-    }catch(err){
-        console.log(err)
+        socket.emit('newOffer', offer); // Send offer to signaling server
+    } catch (err) {
+        console.error('Error during call setup:', err);
+        // Optionally display an error message to the user
     }
+};
 
-}
+const answerOffer = async (offerObj) => {
+    try {
+        hasAnsweredCall = true;
+        isInCall = true;
+        await fetchUserMedia();
+        await createPeerConnection(offerObj);
+        
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
 
-const answerOffer = async(offerObj)=>{
-    hasAnsweredCall = true;
-    isInCall = true
-    await fetchUserMedia()
-    await createPeerConnection(offerObj);
-    const answer = await peerConnection.createAnswer({}); //just to make the docs happy
-    await peerConnection.setLocalDescription(answer); //this is CLIENT2, and CLIENT2 uses the answer as the localDesc
-    console.log(offerObj)
-    console.log(answer)
-    // console.log(peerConnection.signalingState) //should be have-local-pranswer because CLIENT2 has set its local desc to it's answer (but it won't be)
-    //add the answer to the offerObj so the server knows which offer this is related to
-    offerObj.answer = answer 
-    //emit the answer to the signaling server, so it can emit to CLIENT1
-    //expect a response from the server with the already existing ICE candidates
-    const offerIceCandidates = await socket.emitWithAck('newAnswer',offerObj)
-    offerIceCandidates.forEach(c=>{
-        peerConnection.addIceCandidate(c);
-        console.log("======Added Ice Candidate======")
-    })
-    console.log(offerIceCandidates)
-}
-
-const addAnswer = async(offerObj)=>{
-    //addAnswer is called in socketListeners when an answerResponse is emitted.
-    //at this point, the offer and answer have been exchanged!
-    //now CLIENT1 needs to set the remote
-    await peerConnection.setRemoteDescription(offerObj.answer)
-    const answerzz = document.querySelector('#answer');
-    if (answerzz) {
-        answerzz.remove(); // Remove it if you want to prevent future calls
+        offerObj.answer = answer; // Add the answer to the offer object
+        const offerIceCandidates = await socket.emitWithAck('newAnswer', offerObj);
+        offerIceCandidates.forEach(c => {
+            peerConnection.addIceCandidate(c);
+            console.log("Added Ice Candidate");
+        });
+    } catch (err) {
+        console.error('Error answering offer:', err);
+        // Optionally display an error message to the user
     }
-}
+};
+const addAnswer = async (offerObj) => {
+    try {
+        await peerConnection.setRemoteDescription(offerObj.answer);
+        const answerButton = document.getElementById('answer');
+        if (answerButton) {
+            answerButton.remove(); // Remove the answer button if the call is answered
+        }
+    } catch (err) {
+        console.error('Error setting remote description:', err);
+    }
+};
 
 const fetchUserMedia = ()=>{
     return new Promise(async(resolve, reject)=>{
