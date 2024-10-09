@@ -134,10 +134,10 @@ io.on('connection',(socket)=>{
         socket.emit('availableOffers',offers);
     }
     
- socket.on('newOffer', ({ offer, room }) => {
+socket.on('newOffer', ({ offer, room, offererUserName }) => {
     const newOffer = {
-        offererUserName: userName,
-        offer: offer,
+        offererUserName,
+        offer,
         offerIceCandidates: [],
         answererUserName: null,
         answer: null,
@@ -146,8 +146,8 @@ io.on('connection',(socket)=>{
 
     offers.push(newOffer);
 
-    // Broadcast to all users in the specific room EXCEPT the caller
-    socket.to(room).emit('newOfferAwaiting', newOffer);
+    // Emit as an array
+    socket.to(room).emit('newOfferAwaiting', [newOffer]);
 });
     const resetServerState = () => {
         offers = [];
