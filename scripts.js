@@ -85,10 +85,6 @@ const call = async () => {
     }
 };
 
-
-
-
-
 function joinRoom(room) {
     if (currentRoom) {
         socket.emit('leaveRoom', currentRoom);
