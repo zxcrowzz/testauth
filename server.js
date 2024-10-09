@@ -76,13 +76,19 @@ io.on('connection', (socket) => {
     });
 
     socket.on('newOffer', ({ offer, room }) => {
-        const offerObj = {
-            offer,
-            from: socket.id,
-            offererUserName: userName
-        };
-        socket.to(room).emit('offerReceived', offerObj);
-    });
+    const offerObj = {
+        offer,
+        from: socket.id,
+        offererUserName: userName,
+        offerIceCandidates: [] // Initialize an array to store ICE candidates
+    };
+
+    // Store the offer in the offers array
+    offers.push(offerObj);
+
+    // Emit the offer to the specified room
+    socket.to(room).emit('offerReceived', offerObj);
+});
 
     socket.on('newAnswer', ({ answer, room }, ackFunction) => {
         const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
