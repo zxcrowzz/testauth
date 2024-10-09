@@ -41,3 +41,14 @@ function clearAnswerButtons() {
 }
 
 document.addEventListener('DOMContentLoaded', clearAnswerButtons);
+
+
+// In socketListeners.js
+socket.on('incomingCall', (offerObj) => {
+    const answerButton = document.createElement('button');
+    answerButton.textContent = 'Answer Call';
+    answerButton.id = 'answer';
+    answerButton.classList.add('btn', 'btn-success');
+    answerButton.onclick = () => answerOffer(offerObj);
+    document.getElementById('container').appendChild(answerButton);
+});
