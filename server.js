@@ -136,7 +136,12 @@ function processCandidateBuffer(userName, socketId) {
 
 socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
     const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
-    
+
+    if (!iceUserName) {
+        console.error('ICE User Name is undefined. Cannot buffer ICE candidate.');
+        return; // Exit early if iceUserName is undefined
+    }
+
     console.log('ICE Candidate received for user:', iceUserName);
     console.log('Connected Sockets:', connectedSockets.map(s => s.userName));
 
