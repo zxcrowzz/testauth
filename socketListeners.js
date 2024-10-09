@@ -28,20 +28,17 @@ socket.on('receivedIceCandidateFromServer',iceCandidate=>{
 })
 
 function createOfferEls(offers) {
-    if (!Array.isArray(offers)) {
-        console.error('Expected offers to be an array, but got:', typeof offers);
-        return;
-    }
-
     const answerEl = document.querySelector('#answer');
-    clearAnswerButtons(); // Clear existing buttons before adding new ones
+    clearAnswerButtons();
 
     offers.forEach(o => {
-        console.log(o);
-        const newOfferEl = document.createElement('div');
-        newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
-        newOfferEl.addEventListener('click', () => answerOffer(o));
-        answerEl.appendChild(newOfferEl);
+        if (o.answererUserName === userName) { // Ensure only the intended recipient sees the button
+            console.log(o);
+            const newOfferEl = document.createElement('div');
+            newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
+            newOfferEl.addEventListener('click', () => answerOffer(o));
+            answerEl.appendChild(newOfferEl);
+        }
     });
 }
 
