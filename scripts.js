@@ -105,7 +105,7 @@ async function answerOffer(offerObj) {
     if (peerConnection.signalingState === 'stable') {
         console.log('Peer connection already stable.');
         return;
-    
+    }
     // Create the peer connection
     await createPeerConnection(offerObj);
 
