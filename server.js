@@ -443,7 +443,16 @@ app.post('/redirect', (req,res) => {
 res.redirect('/register')
 
 });
-
+// User search route
+app.get('/search', async (req, res) => {
+    const { name } = req.query;
+    try {
+        const users = await User.find({ name: new RegExp(name, 'i') }); // Case-insensitive search
+        res.json(users);
+    } catch (error) {
+        res.status(500).send('Error searching users');
+    }
+})
 app.post('/redirect1', (req,res) => {
     res.redirect('/login')
     
