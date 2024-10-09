@@ -133,19 +133,21 @@ io.on('connection',(socket)=>{
         socket.emit('availableOffers',offers);
     }
     
-    socket.on('newOffer',newOffer=>{
-        offers.push({
-            offererUserName: userName,
-            offer: newOffer,
-            offerIceCandidates: [],
-            answererUserName: null,
-            answer: null,
-            answererIceCandidates: []
-        })
-        // console.log(newOffer.sdp.slice(50))
-        //send out to all connected sockets EXCEPT the caller
-        socket.broadcast.emit('newOfferAwaiting',offers.slice(-1))
-    })
+  socket.on('newOffer', ({ offer, room }) => {
+    const newOffer = {
+        offererUserName: userName,
+        offer: offer,
+        offerIceCandidates: [],
+        answererUserName: null,
+        answer: null,
+        answererIceCandidates: []
+    };
+
+    offers.push(newOffer);
+
+    // Broadcast to all users in the specific room EXCEPT the caller
+    socket.to(room).emit('newOfferAwaiting', newOffer);
+});
     const resetServerState = () => {
         offers = [];
         console.log('Resetting server state...');
