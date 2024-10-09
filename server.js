@@ -73,17 +73,17 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (room) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
-         console.log('Current rooms:', io.sockets.adapter.rooms);
-             const usersInRoom1 = io.sockets.adapter.rooms[room]?.sockets;
-            console.log('usersInRoom:', usersInRoom1); // Log users in room
-            const currentUserCount = usersInRoom1 ? Object.keys(usersInRoom1).length : 0;
-            console.log('Current user count in room:', currentUserCount); // Debugging line
-             const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
-        if (usersInRoom && Object.keys(usersInRoom).length === 2) {
+     
           
-            console.log('emitting111');
-            io.to(room).emit('bothUsersInRoom'); // Notify both users
-        }
+            
+        const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
+        const currentUserCount = usersInRoom ? usersInRoom.size : 0;
+        if (currentUserCount === 2) {
+        console.log('emitting111');
+        io.to(room).emit('bothUsersInRoom'); // Notify both users
+    } else {
+        console.log('Not enough users in room to emit event.');
+    }
 
     });
 
