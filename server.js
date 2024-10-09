@@ -30,7 +30,11 @@ const cert = fs.readFileSync('cert.crt');
 let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
-const expressServer = https.createServer({key, cert}, app);
+const expressServer = app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
+});
+// Create our socket.io server
+
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
     cors: {
@@ -41,7 +45,7 @@ const io = socketio(expressServer,{
         methods: ["GET", "POST"]
     }
 });
-expressServer.listen(8181);
+
 
 //offers will contain {}
 const offers = [
