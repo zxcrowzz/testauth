@@ -30,7 +30,7 @@ let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
 const expressServer = app.listen(process.env.PORT || 3000, () => {
-    console.log(Server is running on port ${process.env.PORT || 3000});
+   
 });
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
@@ -333,7 +333,7 @@ app.post("/register", [
         await transporter.sendMail({
             to: pendingUser.email,
             subject: 'Confirm Email',
-            html: Click <a href="${url}">here</a> to confirm your email.,
+            html: `Click <a href="${url}">here</a> to confirm your email.`,
         });
 
         res.status(201).send('User registered. Please check your email to confirm.');
