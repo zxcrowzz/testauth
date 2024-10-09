@@ -76,6 +76,7 @@ io.on('connection', (socket) => {
 
         const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
         if (usersInRoom && Object.keys(usersInRoom).length === 2) {
+            console.log('emitting111');
             io.to(room).emit('bothUsersInRoom'); // Notify both users
         }
     });
