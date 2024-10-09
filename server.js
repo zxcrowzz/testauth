@@ -73,6 +73,7 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (room) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
+         console.log('Current rooms:', io.sockets.adapter.rooms);
              const usersInRoom1 = io.sockets.adapter.rooms[room]?.sockets;
             console.log('usersInRoom:', usersInRoom1); // Log users in room
             const currentUserCount = usersInRoom1 ? Object.keys(usersInRoom1).length : 0;
