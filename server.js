@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
+
 let peerConnection;
 const path = require("path");
 const bcrypt = require("bcrypt");
@@ -19,6 +20,7 @@ const https = require('https')
 const express = require('express');
 const app = express();
 const socketio = require('socket.io');
+const rooms = {};
 app.use(express.static(__dirname))
 const { v4: uuidV4 } = require('uuid');
 //we need a key and cert to run https
@@ -69,10 +71,26 @@ io.on('connection',(socket)=>{
         socket.disconnect(true);
         return;
     }
+
+    
     connectedSockets.push({
         socketId: socket.id,
         userName
     })
+
+    socket.on('create_join', (roomName) => {
+    if (rooms[roomName]) {
+        rooms[roomName]++;
+    } else {
+
+        rooms[roomName] = 1;
+
+    }
+     socket.join(roomName);
+     socket.emit('room_joined')
+    io.to(roomName).emit('room_user_count' , rooms[roomName]);
+        
+    });
     socket.on('chat message', (message) => {
         // Broadcast the message to all connected clients
         io.emit('chat message', message);
@@ -85,6 +103,19 @@ io.on('connection',(socket)=>{
    
 
     socket.on('disconnect', () => {
+        for (let roomName in rooms) {
+        if (socket.rooms.has(roomName)) {
+            
+            rooms[roomName]--;
+            io.to(roomName).emit('room_user_count' , rooms[roomName]);
+            if (rooms[roomName] === 0) {
+
+            delete rooms[roomName];
+
+            }
+            }
+
+        }
         connectedClients--;
         console.log('User disconnected');
         socket.broadcast.emit('userDisconnected', { userId: socket.id });
