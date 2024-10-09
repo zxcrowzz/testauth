@@ -13,7 +13,7 @@ let isInCall = false;
 const messageDiv = document.getElementById('container1');
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
-
+let currentRoom = null;
 let localStream; //a var to hold the local video stream
 let remoteStream; //a var to hold the remote video stream
 let peerConnection; //the peerConnection that the two clients use to talk
@@ -39,7 +39,7 @@ let peerConfiguration = {
 
 //when a client initiates a call
 const call = async e=>{
-    
+    joinRoom(room);
     await fetchUserMedia();
 
     //peerConnection is all set with our STUN servers sent over
@@ -52,13 +52,22 @@ const call = async e=>{
         console.log(offer);
         peerConnection.setLocalDescription(offer);
         didIOffer = true;
-        socket.emit('newOffer',offer); //send offer to signalingServer
+        socket.emit('newOffer',{ offer, room }); //send offer to signalingServer
     }catch(err){
         console.log(err)
     }
 
 }
 
+
+const joinRoom = (room) => {
+    if (currentRoom) {
+        // Leave the current room if already in one
+        socket.emit('leaveRoom', currentRoom);
+    }
+    currentRoom = room;
+    socket.emit('joinRoom', room);
+};
 const answerOffer = async(offerObj)=>{
     hasAnsweredCall = true;
     isInCall = true
