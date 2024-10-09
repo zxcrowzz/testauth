@@ -259,7 +259,10 @@ socket.on('room-joined', (roomName) => {
 socket.on('room_user_count', (count) => {
     callButton.disabled = (count < 2);
 });
+socket.on('bothUsersInRoom', (room) => {
+currentRoom = room;
 
+});
 
 document.getElementById('hangup').addEventListener('click', hangUp);
 
