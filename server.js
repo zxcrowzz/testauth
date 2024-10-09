@@ -402,7 +402,8 @@ app.post("/login", async (req, res, next) => {
             await transporter.sendMail({
                 to: user.email,
                 subject: 'Your Verification Code',
-                html: <p>Your verification code is: <strong>${verificationCode}</strong></p>,
+               html: `<p>Your verification code is: <strong>${verificationCode}</strong></p>`,
+                
             });
 
             return res.redirect('/verify');
