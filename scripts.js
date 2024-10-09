@@ -1,16 +1,17 @@
-const userName = "Pantsbro"+Math.floor(Math.random() * 100000)
+const userName = "Pantsbro" + Math.floor(Math.random() * 100000);
 const password = "x";
 let hasAnsweredCall = false;
 let currentRoom = null; 
 document.querySelector('#user-name').innerHTML = userName;
 
-//if trying it on a phone, use this instead...
- const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com',{
-//const socket = io.connect('https://localhost:8181/',{
+// Connect to the socket
+const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
     auth: {
-        userName,password
+        userName, 
+        password
     }
-})
+});
+
 const messageDiv = document.getElementById('container1');
 let localStream;
 let remoteStream;
@@ -155,6 +156,3 @@ document.getElementById('join-button').addEventListener('click', () => {
 });
 
 document.getElementById('hangup').addEventListener('click', hangUp);
-
-    this.remove()
-});
