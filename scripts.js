@@ -38,7 +38,7 @@ const createPeerConnection = async (offerObj) => {
     const configuration = {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }, // Added missing comma here
+            { urls: 'stun:stun1.l.google.com:19302' },
             {
                 urls: 'turn:your-turn-server-url', // Replace with your TURN server URL
                 username: 'your-username', // Replace with your TURN username
@@ -47,11 +47,8 @@ const createPeerConnection = async (offerObj) => {
         ]
     };
 
-    // Rest of your function...
-};
-
-
-    peerConnection = new RTCPeerConnection(configuration); // Use configuration here
+    // Create the RTCPeerConnection
+    peerConnection = new RTCPeerConnection(configuration);
 
     // Check if localStream is defined before adding tracks
     if (localStream) {
@@ -93,6 +90,7 @@ const createPeerConnection = async (offerObj) => {
     });
     iceCandidateQueue = []; // Clear the queue
 };
+
 
 const call = async () => {
     try {
