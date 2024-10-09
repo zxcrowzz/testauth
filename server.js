@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
+
 const PendingUser = require('./models/PendingUser'); // Adjust the path as necessary
 const path = require("path");
 const bcrypt = require("bcrypt");
@@ -15,49 +16,36 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const fs = require('fs');
-const https = require('https')
+const https = require('https');
 const express = require('express');
 const app = express();
 const socketio = require('socket.io');
-app.use(express.static(__dirname))
+app.use(express.static(__dirname));
 const { v4: uuidV4 } = require('uuid');
-//we need a key and cert to run https
-//we generated them with mkcert
-// $ mkcert create-ca
-// $ mkcert create-cert
 
 let connectedClients = 0;
-//we changed our express setup so we can use https
-//pass the key and cert to createServer on https
+
 const expressServer = app.listen(process.env.PORT || 3000, () => {
-   
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
-//create our socket.io server... it will listen to our express port
-const io = socketio(expressServer,{
+
+// Create our socket.io server
+const io = socketio(expressServer, {
     cors: {
         origin: [
-             'https://10.0.0.66',
-            "https://r3dxx-9ce6f110c87b.herokuapp.com" // if using a phone or another computer
+            'https://10.0.0.66',
+            "https://r3dxx-9ce6f110c87b.herokuapp.com" // If using a phone or another computer
         ],
         methods: ["GET", "POST"]
     }
 });
 
-//offers will contain {}
-let offers = [
-    // offererUserName
-    // offer
-    // offerIceCandidates
-    // answererUserName
-    // answer
-    // answererIceCandidates
-];
-const connectedSockets = [
-    //username, socketId
-]
+// Offers will contain {}
+let offers = [];
+const connectedSockets = [];
 
 io.on('connection', (socket) => {
-   connectedClients++;
+    connectedClients++;
     
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
@@ -72,7 +60,7 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (room) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
-     
+
         const usersInRoom = io.sockets.adapter.rooms.get(room);
         const currentUserCount = usersInRoom ? usersInRoom.size : 0;
         if (currentUserCount === 2) {
@@ -91,7 +79,7 @@ io.on('connection', (socket) => {
         const offerObj = {
             offer,
             from: socket.id,
-            offererUserName: socket.handshake.auth.userName
+            offererUserName: userName
         };
         socket.to(room).emit('offerReceived', offerObj);
     });
@@ -133,9 +121,7 @@ io.on('connection', (socket) => {
             console.log('Ice candidate received but could not find corresponding user');
         }
     });
-});
 
-    // Handle disconnection
     socket.on('disconnect', () => {
         connectedClients--;
         console.log('User disconnected');
@@ -152,8 +138,6 @@ io.on('connection', (socket) => {
         socket.emit('availableOffers', offers);
     }
 });
-
-
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }));
@@ -314,7 +298,6 @@ app.get('/confirmation/:token', async (req, res) => {
 
 // Login route
 app.get('/login', checkNotAuthenticated, (req, res) => {
-    console.log("not auth")
     res.render("login.ejs");
 });
 
@@ -332,18 +315,13 @@ app.post("/login", async (req, res, next) => {
                 return next(err);
             }
 
-            // Generate a random verification code
             const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-            // Store verification code in session
             req.session.verificationCode = verificationCode;
 
-            // Send the verification code via email
             await transporter.sendMail({
                 to: user.email,
                 subject: 'Your Verification Code',
-               html: `<p>Your verification code is: <strong>${verificationCode}</strong></p>`,
-                
+                html: `<p>Your verification code is: <strong>${verificationCode}</strong></p>`,
             });
 
             return res.redirect('/verify');
@@ -361,28 +339,29 @@ app.post('/verify', (req, res) => {
     const { code } = req.body;
 
     if (code === req.session.verificationCode) {
-        const roomId = uuidV4(); 
         return res.redirect('/index.html');
     } else {
         res.send('Invalid verification code. Please try again.');
     }
 });
+
 app.get('/index.html', checkAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
+
 // Redirect root to a new room
 app.get('/', (req, res) => {
-    const roomId = uuidV4();
     if (req.isAuthenticated()) {
         res.sendFile(path.join(__dirname, 'views', 'index.html'));
     } else {
         res.redirect('/login');
     }
 });
-app.post('/redirect', (req,res) => {
-res.redirect('/register')
 
+app.post('/redirect', (req, res) => {
+    res.redirect('/register');
 });
+
 // User search route
 app.get('/search', async (req, res) => {
     const { name } = req.query;
@@ -392,13 +371,14 @@ app.get('/search', async (req, res) => {
     } catch (error) {
         res.status(500).send('Error searching users');
     }
-})
-app.post('/redirect1', (req,res) => {
-    res.redirect('/login')
-    
 });
+
+app.post('/redirect1', (req, res) => {
+    res.redirect('/login');
+});
+
 // Room route
-app.get('/:index.html:', (req, res) => {
+app.get('/:room.html', (req, res) => {
     res.render('index', { roomId: req.params.room });
 });
 
