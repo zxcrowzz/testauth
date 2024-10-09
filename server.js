@@ -89,7 +89,7 @@ io.on('connection',(socket)=>{
      socket.join(roomName);
      socket.emit('room_joined')
     io.to(roomName).emit('room_user_count' , rooms[roomName]);
-    io.to(room).emit('bothUsersInRoom', room);
+    io.to(roomName).emit('bothUsersInRoom', roomName);
         
     });
     socket.on('chat message', (message) => {
