@@ -47,7 +47,7 @@ const io = socketio(expressServer,{
 
 
 //offers will contain {}
-const offers = [
+let offers = [
     // offererUserName
     // offer
     // offerIceCandidates
