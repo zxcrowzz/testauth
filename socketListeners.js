@@ -1,54 +1,70 @@
+// Listen for available offers
+socket.on('availableOffers', (offers) => {
+    console.log('Available Offers:', offers);
+    createOfferEls(offers);
+});
 
-socket.on('availableOffers',offers=>{
-    console.log(offers)
-    createOfferEls(offers)
-})
+// Listen for a new offer
+socket.on('newOfferAwaiting', (offers) => {
+    createOfferEls(offers);
+});
 
-//someone just made a new offer and we're already here - call createOfferEls
-socket.on('newOfferAwaiting',offers=>{
-    createOfferEls(offers)
-})
+// Listen for the answer response
+socket.on('answerResponse', (offerObj) => {
+    console.log('Answer Response:', offerObj);
+    addAnswer(offerObj);
+});
 
-socket.on('answerResponse',offerObj=>{
-    console.log(offerObj)
-    addAnswer(offerObj)
-})
+// Listen for received ICE candidates
+socket.on('receivedIceCandidateFromServer', (iceCandidate) => {
+    addNewIceCandidate(iceCandidate);
+    console.log('Received ICE Candidate:', iceCandidate);
+});
 
-socket.on('receivedIceCandidateFromServer',iceCandidate=>{
-    addNewIceCandidate(iceCandidate)
-    console.log(iceCandidate)
-})
+// Create offer elements and display answer buttons
+function createOfferEls(offers) {
+    const answerContainer = document.querySelector('#answer');
+    clearAnswerButtons(); // Clear existing buttons before adding new ones
 
-function createOfferEls(offers){
-    //make green answer button for this new offer
-    const answerEl = document.querySelector('#answer');
-    offers.forEach(o=>{
-        console.log(o);
+    offers.forEach(o => {
+        console.log('Creating offer element:', o);
         const newOfferEl = document.createElement('div');
-        newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
-        newOfferEl.addEventListener('click',()=>answerOffer(o))
-        answerEl.appendChild(newOfferEl);
-    })
+        newOfferEl.innerHTML = `<button class="btn btn-success">Answer ${o.offererUserName}</button>`;
+        
+        // Event listener for the answer button
+        newOfferEl.querySelector('button').addEventListener('click', () => answerOffer(o));
+        answerContainer.appendChild(newOfferEl);
+    });
 }
-const callButton = document.querySelector('#Hangup'); // Select the button by its ID
-callButton.disabled = true;
 
+// Function to clear existing answer buttons
 function clearAnswerButtons() {
-    const answerEl = document.querySelector('#answer');
-    while (answerEl.firstChild) {
-        answerEl.removeChild(answerEl.firstChild);
+    const answerContainer = document.querySelector('#answer');
+    while (answerContainer.firstChild) {
+        answerContainer.removeChild(answerContainer.firstChild);
     }
 }
 
-document.addEventListener('DOMContentLoaded', clearAnswerButtons);
-
-
-// In socketListeners.js
+// Incoming call handler
 socket.on('incomingCall', (offerObj) => {
+    console.log('Incoming Call:', offerObj);
     const answerButton = document.createElement('button');
     answerButton.textContent = 'Answer Call';
     answerButton.id = 'answer';
     answerButton.classList.add('btn', 'btn-success');
-    answerButton.onclick = () => answerOffer(offerObj);
+
+    // Event listener for the incoming call answer button
+    answerButton.onclick = () => {
+        answerOffer(offerObj);
+        answerButton.remove(); // Remove the button after answering
+    };
+
     document.getElementById('container').appendChild(answerButton);
 });
+
+// Example usage of the hang-up button
+const callButton = document.querySelector('#hangup'); // Make sure the ID matches
+callButton.disabled = true; // Disable the hang-up button initially
+
+// Event listener for hang-up button
+callButton.addEventListener('click', hangUp);
