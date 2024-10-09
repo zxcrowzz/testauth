@@ -14,6 +14,7 @@ let currentRoom = null;
 const joinRoomButton = document.getElementById('join-button');
 const roomInput = document.getElementById('room-input');
 const callButton = document.getElementById('call');
+callButton.disabled = true;
 const localVideoEl = document.querySelector('#local-video');
 const remoteVideoEl = document.querySelector('#remote-video');
 
