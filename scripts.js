@@ -22,6 +22,22 @@ let localStream; //a var to hold the local video stream
 let remoteStream; //a var to hold the remote video stream
 let peerConnection; //the peerConnection that the two clients use to talk
 let didIOffer = false;
+joinRoomButton.addEventListener('click', () => {
+    const roomName = roomInput.value;
+    socket.emit('create_join', roomName);
+});
+
+socket.on('room-joined', (roomName) => {
+    callButton.disabled = true;
+});
+
+socket.on('room_user_count', (count) => {
+    callButton.disabled = (count < 2);
+});
+socket.on('bothUsersInRoom', (room) => {
+currentRoom = room;
+
+});
 
 let peerConfiguration = {
     iceServers: [
@@ -248,22 +264,6 @@ socket.on('disconnect', () => {
 
 // Add event listener to the hang-up button
 
-joinRoomButton.addEventListener('click', () => {
-    const roomName = roomInput.value;
-    socket.emit('create_join', roomName);
-});
-
-socket.on('room-joined', (roomName) => {
-    callButton.disabled = true;
-});
-
-socket.on('room_user_count', (count) => {
-    callButton.disabled = (count < 2);
-});
-socket.on('bothUsersInRoom', (room) => {
-currentRoom = room;
-
-});
 
 document.getElementById('hangup').addEventListener('click', hangUp);
 
