@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
      
           
             
-        const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
+        const usersInRoom = io.sockets.adapter.rooms.get(room);
         const currentUserCount = usersInRoom ? usersInRoom.size : 0;
         if (currentUserCount === 2) {
         console.log('emitting111');
