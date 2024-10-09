@@ -263,15 +263,15 @@ function joinRoom(room) {
     currentRoom = room;
     socket.emit('joinRoom', room);
 
-    // Listen for both users in the room
+    
+}
+// Listen for both users in the room
     socket.on('bothUsersInRoom', () => {
         console.log('Both users are in the room, initiating call...');
         if (!isInCall) {
             call(); // Initiate the call
         }
     });
-}
-
 document.querySelector("#answer").addEventListener('click', function () {
 
     this.remove()
