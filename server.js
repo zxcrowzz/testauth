@@ -56,70 +56,59 @@ const connectedSockets = [
     //username, socketId
 ]
 
-io.on('connection',(socket)=>{
+io.on('connection', (socket) => {
     connectedClients++;
-    
-    // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
-    const password = socket.handshake.auth.password;
 
-    if(password !== "x"){
+    // Validate user connection
+    if (!isValidUser(userName)) {
         socket.disconnect(true);
         return;
     }
-    connectedSockets.push({
-        socketId: socket.id,
-        userName
-    })
 
-    socket.emit('chatmessage', 'hello')
-    socket.on('serverMessage', message => {
-    socket.broadcast.emit('chatmessage', message)
-    });
-    socket.on('sendMessage', (data) => {
-        console.log('Message received from client:', data.text);
-        
-        // Broadcast the message to all other clients
-        socket.broadcast.emit('newMessage', { text: data.text });
-    });
-    socket.on('chat message', (message) => {
-        // Broadcast the message to all connected clients
-        io.emit('chat message', message);
-    });
-    socket.on('hangUp', () => {
-        console.log('User hung up: ' + socket.id);
-        // Broadcast the hang-up event to all other connected clients
-        socket.broadcast.emit('hangUp');
-        io.emit('lastUserLeft');
-    });
-     socket.on('joinRoom', (roomId) => {
+    connectedSockets.push({ socketId: socket.id, userName });
+
+    socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
         socket.emit('chatmessage', 'Welcome to the room!');
-
-        // Send existing offers to the new user
         if (offers.length) {
             socket.emit('availableOffers', offers);
         }
     });
 
     socket.on('newOffer', (newOffer) => {
-        const roomId = newOffer.room; // Assuming newOffer includes room information
-        offers.push({ /* offer details */ });
+        const roomId = newOffer.room;
+        const offerData = {
+            offererUserName: userName,
+            offer: newOffer,
+            offerIceCandidates: [],
+            answererUserName: null,
+            answer: null,
+            answererIceCandidates: []
+        };
+        offers.push(offerData);
         socket.to(roomId).emit('newOfferAwaiting', offers.slice(-1));
     });
 
+    socket.on('newAnswer', (offerObj, ackFunction) => {
+        const socketToAnswer = connectedSockets.find(s => s.userName === offerObj.offererUserName);
+        if (socketToAnswer) {
+            const offerToUpdate = offers.find(o => o.offererUserName === offerObj.offererUserName);
+            if (offerToUpdate) {
+                ackFunction(offerToUpdate.offerIceCandidates);
+                offerToUpdate.answer = offerObj.answer;
+                offerToUpdate.answererUserName = userName;
+                socket.to(socketToAnswer.socketId).emit('answerResponse', offerToUpdate);
+            }
+        }
+    });
 
     socket.on('disconnect', () => {
         connectedClients--;
-        console.log('User disconnected');
-        socket.broadcast.emit('userDisconnected', { userId: socket.id });
-        if (connectedClients === 0) {
-            offers = [];
-            // Trigger reset logic when no clients are connected
-            io.emit('lastUserLeft');
-            console.log('Last user left, notifying all clients.');
-        }
+        connectedSockets = connectedSockets.filter(s => s.socketId !== socket.id);
+        // Cleanup logic for offers if necessary
     });
+});
 
 
 
