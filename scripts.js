@@ -86,11 +86,17 @@ const answerOffer = async (offerObj) => {
 
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
-        socket.emit('newAnswer', { answer, room: currentRoom, offererUserName: offerObj.offererUserName });
+
+        socket.emit('newAnswer', { 
+            answer, 
+            room: currentRoom, 
+            offererUserName: offerObj.offererUserName // Ensure this is included
+        });
     } catch (error) {
         console.error('Error answering offer:', error);
     }
 };
+
 
 function joinRoom(room) {
     if (currentRoom) {
