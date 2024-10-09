@@ -38,7 +38,7 @@ const createPeerConnection = async (offerObj) => {
     const configuration = {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-                     'stun:stun1.l.google.com:19302'
+            { urls: 'stun:stun1.l.google.com:19302' }, // Added missing comma here
             {
                 urls: 'turn:your-turn-server-url', // Replace with your TURN server URL
                 username: 'your-username', // Replace with your TURN username
@@ -46,6 +46,10 @@ const createPeerConnection = async (offerObj) => {
             }
         ]
     };
+
+    // Rest of your function...
+};
+
 
     peerConnection = new RTCPeerConnection(configuration); // Use configuration here
 
