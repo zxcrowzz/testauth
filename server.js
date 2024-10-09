@@ -90,6 +90,7 @@ io.on('connection',(socket)=>{
         console.log('User hung up: ' + socket.id);
         // Broadcast the hang-up event to all other connected clients
         socket.broadcast.emit('hangUp');
+        io.emit('lastUserLeft');
     });
    
 
