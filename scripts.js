@@ -54,7 +54,11 @@ const call = async e=>{
         console.log(offer);
         peerConnection.setLocalDescription(offer);
         didIOffer = true;
-        socket.emit('newOffer',offer); //send offer to signalingServer
+          socket.emit('newOffer', {
+            offer,
+            room: currentRoom, // Include the room information
+            offererUserName: userName // Include the userName for identification
+        });
     }catch(err){
         console.log(err)
     }
