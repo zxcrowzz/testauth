@@ -17,6 +17,7 @@ const messageDiv = document.getElementById('container1');
 let localStream;
 let remoteStream;
 let peerConnection;
+let iceCandidateQueue = [];
 
 let isInCall = false;
 let didIOffer = false;
@@ -35,7 +36,7 @@ const fetchUserMedia = async () => {
 };
 
 const createPeerConnection = async (offerObj) => {
-        const configuration = {
+    const configuration = {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' }, // STUN server
             {
@@ -45,12 +46,17 @@ const createPeerConnection = async (offerObj) => {
             }
         ]
     };
-    peerConnection = new RTCPeerConnection();
 
-    // Add local stream tracks to peer connection
-    localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-    });
+    peerConnection = new RTCPeerConnection(configuration); // Use configuration here
+
+    // Check if localStream is defined before adding tracks
+    if (localStream) {
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+    } else {
+        console.error('Local stream is not available. Cannot add tracks to peer connection.');
+    }
 
     // Set up remote stream
     remoteStream = new MediaStream();
@@ -71,10 +77,17 @@ const createPeerConnection = async (offerObj) => {
         remoteStream.addTrack(event.track);
     };
 
+    // Set remote description if an offer object is provided
     if (offerObj) {
         await peerConnection.setRemoteDescription(offerObj.offer);
     }
-};
+
+    // Process buffered ICE candidates if any
+    iceCandidateQueue.forEach(candidate => {
+        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+            .catch(error => console.error('Error adding buffered ICE candidate', error));
+    });
+    iceCandidateQueue = []; // Clear the 
 
 const call = async () => {
     try {
