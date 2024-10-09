@@ -86,23 +86,7 @@ const call = async () => {
 };
 
 
-const answerOffer = async (offerObj) => {
-    try {
-        await fetchUserMedia();
-        await createPeerConnection(offerObj);
 
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-
-        socket.emit('newAnswer', { 
-            answer, 
-            room: currentRoom, 
-            offererUserName: offerObj.offererUserName // Ensure this is included
-        });
-    } catch (error) {
-        console.error('Error answering offer:', error);
-    }
-};
 
 
 function joinRoom(room) {
