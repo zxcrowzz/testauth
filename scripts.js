@@ -34,7 +34,7 @@ const fetchUserMedia = async () => {
     }
 };
 
-const createPeerConnection = async (offerObj) => {
+const createPeerConnection = () => {
     const configuration = {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
@@ -77,19 +77,8 @@ const createPeerConnection = async (offerObj) => {
     peerConnection.ontrack = event => {
         remoteStream.addTrack(event.track);
     };
-
-    // Set remote description if an offer object is provided
-    if (offerObj) {
-        await peerConnection.setRemoteDescription(offerObj.offer);
-    }
-
-    // Process buffered ICE candidates if any
-    iceCandidateQueue.forEach(candidate => {
-        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
-            .catch(error => console.error('Error adding buffered ICE candidate', error));
-    });
-    iceCandidateQueue = []; // Clear the queue
 };
+
 
 
 const call = async () => {
