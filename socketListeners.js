@@ -1,15 +1,22 @@
 
 //on connection get all available offers and call createOfferEls
-socket.on('availableOffers',offers=>{
-    console.log(offers)
-    createOfferEls(offers)
-})
+socket.on('availableOffers', offers => {
+    if (Array.isArray(offers)) {
+        console.log(offers);
+        createOfferEls(offers);
+    } else {
+        console.error('Expected offers to be an array, but got:', typeof offers);
+    }
+});
 
 //someone just made a new offer and we're already here - call createOfferEls
-socket.on('newOfferAwaiting',offers=>{
-    createOfferEls(offers)
-})
-
+socket.on('newOfferAwaiting', offers => {
+    if (Array.isArray(offers)) {
+        createOfferEls(offers);
+    } else {
+        console.error('Expected offers to be an array, but got:', typeof offers);
+    }
+});
 socket.on('answerResponse',offerObj=>{
     console.log(offerObj)
     addAnswer(offerObj)
