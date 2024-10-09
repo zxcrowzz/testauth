@@ -88,7 +88,15 @@ io.on('connection',(socket)=>{
     socket.on('newAnswer', ({ answer, room }) => {
         socket.to(room).emit('answerReceived', { answer, from: socket.id });
     });
+    socket.on('joinRoom', (room) => {
+    socket.join(room);
+    const usersInRoom = io.sockets.adapter.rooms[room].sockets;
 
+    // Check if both users are in the room
+    if (Object.keys(usersInRoom).length === 2) {
+        io.to(room).emit('bothUsersInRoom'); // Notify both users
+    }
+    });
     // Handle other events...
     socket.emit('chatmessage', 'hello')
     socket.on('serverMessage', message => {
