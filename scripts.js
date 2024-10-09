@@ -10,7 +10,7 @@ let isInCall = false;
     }
 })
 
-
+let currentRoom = null;
 const joinRoomButton = document.getElementById('join-button');
 const roomInput = document.getElementById('room-input');
 const callButton = document.getElementById('call');
