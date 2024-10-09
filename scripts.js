@@ -235,7 +235,7 @@ socket.on('disconnect', () => {
 // Add event listener to the hang-up button
 // Example usage for joining a room when a button is clicked
 document.getElementById('join-button').addEventListener('click', () => {
-    const roomId = document.getElementById('room-id-input').value.trim();
+    const roomId = document.getElementById('room-input').value.trim();
     if (roomId) {
         joinRoom(roomId);
     } else {
@@ -248,31 +248,7 @@ document.getElementById('join-button').addEventListener('click', () => {
 document.getElementById('hangup').addEventListener('click', hangUp);
 
 
-const userSearchInput = document.getElementById('user-search');
-const userList = document.getElementById('user-list');
 
-userSearchInput.addEventListener('input', async (event) => {
-    const searchTerm = event.target.value;
-
-    if (searchTerm.length > 2) { // Trigger search after typing 3 characters
-        const response = await fetch(`/search?name=${searchTerm}`);
-        const users = await response.json();
-        
-        // Clear previous results
-        userList.innerHTML = '';
-
-        users.forEach(user => {
-            const li = document.createElement('li');
-            li.textContent = user.name;
-            li.classList.add('list-group-item');
-            li.onclick = () => initiateCall(user); // Call the user when their name is clicked
-            userList.appendChild(li);
-        });
-    } else {
-        // Clear the user list if search term is too short
-        userList.innerHTML = '';
-    }
-});
 
 function initiateCall(user) {
     console.log(`Calling ${user.name}`);
