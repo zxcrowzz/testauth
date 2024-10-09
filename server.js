@@ -105,34 +105,42 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
+    const iceCandidateBuffer = new Map();
+
+socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
     const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
     
     console.log('ICE Candidate received for user:', iceUserName);
     console.log('Connected Sockets:', connectedSockets.map(s => s.userName));
 
-    let offerInOffers, socketToSendTo;
+    let offerInOffers = offers.find(o => 
+        (didIOffer && o.offererUserName === iceUserName) || 
+        (!didIOffer && o.answererUserName === iceUserName)
+    );
 
-    if (didIOffer) {
-        offerInOffers = offers.find(o => o.offererUserName === iceUserName);
-        if (offerInOffers && offerInOffers.answererUserName) {
-            socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.answererUserName);
+    if (offerInOffers) {
+        let targetUserName = didIOffer ? offerInOffers.answererUserName : offerInOffers.offererUserName;
+        let socketToSendTo = connectedSockets.find(s => s.userName === targetUserName);
+
+        if (socketToSendTo) {
+            console.log('Sending ICE candidate to:', socketToSendTo.userName);
+            socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
+        } else {
+            console.log('Buffering ICE candidate for:', targetUserName);
+            if (!iceCandidateBuffer.has(targetUserName)) {
+                iceCandidateBuffer.set(targetUserName, []);
+            }
+            iceCandidateBuffer.get(targetUserName).push(iceCandidate);
         }
     } else {
-        offerInOffers = offers.find(o => o.answererUserName === iceUserName);
-        if (offerInOffers) {
-            socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.offererUserName);
+        console.log('Buffering ICE candidate for unknown user:', iceUserName);
+        if (!iceCandidateBuffer.has(iceUserName)) {
+            iceCandidateBuffer.set(iceUserName, []);
         }
-    }
-
-    if (socketToSendTo) {
-        console.log('Sending ICE candidate to:', socketToSendTo.userName);
-        socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
-    } else {
-        console.log('Ice candidate received but could not find corresponding user:', iceUserName);
-        socket.emit('iceCandidateError', { message: 'Could not process ICE candidate', iceUserName });
+        iceCandidateBuffer.get(iceUserName).push(iceCandidate);
     }
 });
+
 
     socket.on('disconnect', () => {
         connectedClients--;
