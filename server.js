@@ -92,7 +92,22 @@ io.on('connection',(socket)=>{
         socket.broadcast.emit('hangUp');
         io.emit('lastUserLeft');
     });
-   
+     socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        socket.emit('chatmessage', 'Welcome to the room!');
+
+        // Send existing offers to the new user
+        if (offers.length) {
+            socket.emit('availableOffers', offers);
+        }
+    });
+
+    socket.on('newOffer', (newOffer) => {
+        const roomId = newOffer.room; // Assuming newOffer includes room information
+        offers.push({ /* offer details */ });
+        socket.to(roomId).emit('newOfferAwaiting', offers.slice(-1));
+    });
+
 
     socket.on('disconnect', () => {
         connectedClients--;
