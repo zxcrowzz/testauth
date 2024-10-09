@@ -100,27 +100,33 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
-        const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
-        let offerInOffers, socketToSendTo;
+    const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
+    
+    console.log('ICE Candidate Object:', iceCandidateObj);
+    console.log('Current Offers:', offers);
+    console.log('Connected Sockets:', connectedSockets);
 
-        if (didIOffer) {
-            offerInOffers = offers.find(o => o.offererUserName === iceUserName);
-            if (offerInOffers && offerInOffers.answererUserName) {
-                socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.answererUserName);
-            }
-        } else {
-            offerInOffers = offers.find(o => o.answererUserName === iceUserName);
-            if (offerInOffers) {
-                socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.offererUserName);
-            }
-        }
+    let offerInOffers, socketToSendTo;
 
-        if (socketToSendTo) {
-            socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
-        } else {
-            console.log('Ice candidate received but could not find corresponding user');
+    if (didIOffer) {
+        offerInOffers = offers.find(o => o.offererUserName === iceUserName);
+        if (offerInOffers && offerInOffers.answererUserName) {
+            socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.answererUserName);
         }
-    });
+    } else {
+        offerInOffers = offers.find(o => o.answererUserName === iceUserName);
+        if (offerInOffers) {
+            socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.offererUserName);
+        }
+    }
+
+    if (socketToSendTo) {
+        socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
+    } else {
+        console.log('Ice candidate received but could not find corresponding user:', iceUserName);
+    }
+});
+
 
     socket.on('disconnect', () => {
         connectedClients--;
