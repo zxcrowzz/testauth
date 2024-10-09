@@ -36,7 +36,17 @@ function createOfferEls(offers) {
         answerContainer.appendChild(newOfferEl);
     });
 }
+socket.on('bothUsersInRoom', () => {
+    console.log('Both users are in the room, initiating call...');
+    if (!isInCall) {
+        call(); // Start the call
+    }
+});
 
+socket.on('offerReceived', offer => {
+    console.log('Offer received:', offer);
+    answerOffer(offer); // Respond to the offer
+});
 // Function to clear existing answer buttons
 function clearAnswerButtons() {
     const answerContainer = document.querySelector('#answer');
