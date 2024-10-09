@@ -46,25 +46,15 @@ const connectedSockets = [];
 
 io.on('connection', (socket) => {
     connectedClients++;
-    
-    const userName = socket.handshake.auth.userName;
-    const password = socket.handshake.auth.password;
+    const { userName, password } = socket.handshake.auth;
 
+    // Authenticate the user
     if (password !== "x") {
         socket.disconnect(true);
         return;
     }
 
     connectedSockets.push({ socketId: socket.id, userName });
-function processCandidateBuffer(userName, socketId) {
-    if (iceCandidateBuffer.has(userName)) {
-        console.log('Processing buffered ICE candidates for:', userName);
-        iceCandidateBuffer.get(userName).forEach(candidate => {
-            socket.to(socketId).emit('receivedIceCandidateFromServer', candidate);
-        });
-        iceCandidateBuffer.delete(userName);
-    }
-}
 
     socket.on('joinRoom', (room) => {
         socket.join(room);
@@ -72,6 +62,7 @@ function processCandidateBuffer(userName, socketId) {
 
         const usersInRoom = io.sockets.adapter.rooms.get(room);
         const currentUserCount = usersInRoom ? usersInRoom.size : 0;
+
         if (currentUserCount === 2) {
             io.to(room).emit('bothUsersInRoom');
         } else {
@@ -92,93 +83,65 @@ function processCandidateBuffer(userName, socketId) {
             offerIceCandidates: [] // Initialize an array to store ICE candidates
         };
 
-        // Store the offer in the offers array
+        // Store the offer
         offers.push(offerObj);
-
-        // Emit the offer to the specified room
         socket.to(room).emit('offerReceived', offerObj);
     });
 
     socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-    console.log('Received new answer:', answer);
-    console.log('Current offers:', offers);
+        const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
+        const socketIdToAnswer = socketToAnswer ? socketToAnswer.socketId : null;
+        const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
 
-    const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
-    console.log('Socket to answer:', socketToAnswer);
-
-    const socketIdToAnswer = socketToAnswer ? socketToAnswer.socketId : null;
-    console.log('Socket ID to answer:', socketIdToAnswer);
-
-    const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
-    console.log('Offer to update:', offerToUpdate);
-
-    if (socketIdToAnswer && offerToUpdate) {
-        ackFunction(offerToUpdate.offerIceCandidates);
-        offerToUpdate.answer = answer.answer;
-        offerToUpdate.answererUserName = userName;
-        socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-
-        // Process any buffered candidates for both users
-        processCandidateBuffer(offerToUpdate.offererUserName, socketIdToAnswer);
-        processCandidateBuffer(userName, socket.id);
-    } else {
-        console.log('Error processing answer. Socket ID or offer not found.');
-        console.log('Answer:', answer);
-        console.log('Connected Sockets:', connectedSockets);
-        console.log('Offers:', offers);
-        if (ackFunction) {
+        if (socketIdToAnswer && offerToUpdate) {
+            offerToUpdate.answer = answer.answer;
+            offerToUpdate.answererUserName = userName;
+            socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
+            processCandidateBuffer(offerToUpdate.offererUserName, socketIdToAnswer);
+            processCandidateBuffer(userName, socket.id);
+            ackFunction({ success: true });
+        } else {
+            console.error('Error processing answer. Socket ID or offer not found.');
             ackFunction({ error: 'Unable to process answer' });
         }
-    }
-});
+    });
 
-    
+    socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
+        const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
 
-socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
-    const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
+        if (!iceUserName) {
+            console.error('ICE User Name is undefined. Cannot buffer ICE candidate.');
+            return; // Exit early if iceUserName is undefined
+        }
 
-    if (!iceUserName) {
-        console.error('ICE User Name is undefined. Cannot buffer ICE candidate.');
-        return; // Exit early if iceUserName is undefined
-    }
+        console.log('ICE Candidate received for user:', iceUserName);
+        let offerInOffers = offers.find(o => 
+            (didIOffer && o.offererUserName === iceUserName) || 
+            (!didIOffer && o.answererUserName === iceUserName)
+        );
 
-    console.log('ICE Candidate received for user:', iceUserName);
-    console.log('Connected Sockets:', connectedSockets.map(s => s.userName));
+        if (offerInOffers) {
+            let targetUserName = didIOffer ? offerInOffers.answererUserName : offerInOffers.offererUserName;
+            let socketToSendTo = connectedSockets.find(s => s.userName === targetUserName);
 
-    let offerInOffers = offers.find(o => 
-        (didIOffer && o.offererUserName === iceUserName) || 
-        (!didIOffer && o.answererUserName === iceUserName)
-    );
-
-    if (offerInOffers) {
-        let targetUserName = didIOffer ? offerInOffers.answererUserName : offerInOffers.offererUserName;
-        let socketToSendTo = connectedSockets.find(s => s.userName === targetUserName);
-
-        if (socketToSendTo) {
-            console.log('Sending ICE candidate to:', socketToSendTo.userName);
-            socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
-        } else {
-            console.log('Buffering ICE candidate for:', targetUserName);
-            if (!iceCandidateBuffer.has(targetUserName)) {
-                iceCandidateBuffer.set(targetUserName, []);
+            if (socketToSendTo) {
+                console.log('Sending ICE candidate to:', socketToSendTo.userName);
+                socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
+            } else {
+                bufferIceCandidate(targetUserName, iceCandidate);
             }
-            iceCandidateBuffer.get(targetUserName).push(iceCandidate);
+        } else {
+            bufferIceCandidate(iceUserName, iceCandidate);
         }
-    } else {
-        console.log('Buffering ICE candidate for unknown user:', iceUserName);
-        if (!iceCandidateBuffer.has(iceUserName)) {
-            iceCandidateBuffer.set(iceUserName, []);
-        }
-        iceCandidateBuffer.get(iceUserName).push(iceCandidate);
-    }
-});
+    });
 
     socket.on('disconnect', () => {
         connectedClients--;
-        console.log('User disconnected');
+        console.log('User disconnected:', socket.id);
         socket.broadcast.emit('userDisconnected', { userId: socket.id });
+        
         if (connectedClients === 0) {
-            offers = [];
+            offers.length = 0; // Clear offers array
             io.emit('lastUserLeft');
             console.log('Last user left, notifying all clients.');
         }
@@ -189,6 +152,26 @@ socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
         socket.emit('availableOffers', offers);
     }
 });
+
+
+function bufferIceCandidate(userName, iceCandidate) {
+    if (!iceCandidateBuffer.has(userName)) {
+        iceCandidateBuffer.set(userName, []);
+    }
+    iceCandidateBuffer.get(userName).push(iceCandidate);
+    console.log('Buffering ICE candidate for:', userName);
+}
+
+// Process buffered ICE candidates for a user
+function processCandidateBuffer(userName, socketId) {
+    if (iceCandidateBuffer.has(userName)) {
+        console.log('Processing buffered ICE candidates for:', userName);
+        iceCandidateBuffer.get(userName).forEach(candidate => {
+            socket.to(socketId).emit('receivedIceCandidateFromServer', candidate);
+        });
+        iceCandidateBuffer.delete(userName);
+    }
+}
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: false }));
