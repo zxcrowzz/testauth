@@ -73,9 +73,9 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (room) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
-             const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
-            console.log('usersInRoom:', usersInRoom); // Log users in room
-            const currentUserCount = usersInRoom ? Object.keys(usersInRoom).length : 0;
+             const usersInRoom1 = io.sockets.adapter.rooms[room]?.sockets;
+            console.log('usersInRoom:', usersInRoom1); // Log users in room
+            const currentUserCount = usersInRoom1 ? Object.keys(usersInRoom1).length : 0;
             console.log('Current user count in room:', currentUserCount); // Debugging line
              const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
         if (usersInRoom && Object.keys(usersInRoom).length === 2) {
