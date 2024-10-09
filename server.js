@@ -329,7 +329,8 @@ app.post("/register", [
 
         await pendingUser.save();
 
-        const url = ${process.env.HEROKU_APP_URL}/confirmation/${token};
+        const url = `${process.env.HEROKU_APP_URL}/confirmation/${token}`;
+
         await transporter.sendMail({
             to: pendingUser.email,
             subject: 'Confirm Email',
