@@ -15,7 +15,7 @@ const messageDiv = document.getElementById('container1');
 let localStream;
 let remoteStream;
 let peerConnection;
-let currentRoom;
+
 let isInCall = false;
 let didIOffer = false;
 
