@@ -1,6 +1,7 @@
 const userName = "Pantsbro"+Math.floor(Math.random() * 100000)
 const password = "x";
 let hasAnsweredCall = false;
+let currentRoom = null; 
 document.querySelector('#user-name').innerHTML = userName;
 let isInCall = false; 
 //if trying it on a phone, use this instead...
@@ -232,7 +233,15 @@ socket.on('disconnect', () => {
 });
 
 // Add event listener to the hang-up button
-
+// Example usage for joining a room when a button is clicked
+document.getElementById('join-button').addEventListener('click', () => {
+    const roomId = document.getElementById('room-id-input').value.trim();
+    if (roomId) {
+        joinRoom(roomId);
+    } else {
+        alert('Please enter a room ID.');
+    }
+});
 
 
 
