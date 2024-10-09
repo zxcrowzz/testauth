@@ -56,6 +56,15 @@ io.on('connection', (socket) => {
     }
 
     connectedSockets.push({ socketId: socket.id, userName });
+function processCandidateBuffer(userName, socketId) {
+    if (iceCandidateBuffer.has(userName)) {
+        console.log('Processing buffered ICE candidates for:', userName);
+        iceCandidateBuffer.get(userName).forEach(candidate => {
+            socket.to(socketId).emit('receivedIceCandidateFromServer', candidate);
+        });
+        iceCandidateBuffer.delete(userName);
+    }
+}
 
     socket.on('joinRoom', (room) => {
         socket.join(room);
@@ -91,19 +100,35 @@ io.on('connection', (socket) => {
     });
 
     socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-    // ... existing code ...
+    console.log('Received new answer:', answer);
+    console.log('Current offers:', offers);
+
+    const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
+    console.log('Socket to answer:', socketToAnswer);
+
+    const socketIdToAnswer = socketToAnswer ? socketToAnswer.socketId : null;
+    console.log('Socket ID to answer:', socketIdToAnswer);
+
+    const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
+    console.log('Offer to update:', offerToUpdate);
 
     if (socketIdToAnswer && offerToUpdate) {
         ackFunction(offerToUpdate.offerIceCandidates);
         offerToUpdate.answer = answer.answer;
         offerToUpdate.answererUserName = userName;
         socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-        
+
         // Process any buffered candidates for both users
         processCandidateBuffer(offerToUpdate.offererUserName, socketIdToAnswer);
         processCandidateBuffer(userName, socket.id);
     } else {
-        console.log('Error processing answer:', answer);
+        console.log('Error processing answer. Socket ID or offer not found.');
+        console.log('Answer:', answer);
+        console.log('Connected Sockets:', connectedSockets);
+        console.log('Offers:', offers);
+        if (ackFunction) {
+            ackFunction({ error: 'Unable to process answer' });
+        }
     }
 });
 
@@ -142,7 +167,6 @@ socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
         iceCandidateBuffer.get(iceUserName).push(iceCandidate);
     }
 });
-
 
     socket.on('disconnect', () => {
         connectedClients--;
@@ -408,12 +432,3 @@ app.get('/:room.html', (req, res) => {
 app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render("register.ejs");
 });
-function processCandidateBuffer(userName, socketId) {
-    if (iceCandidateBuffer.has(userName)) {
-        console.log('Processing buffered ICE candidates for:', userName);
-        iceCandidateBuffer.get(userName).forEach(candidate => {
-            socket.to(socketId).emit('receivedIceCandidateFromServer', candidate);
-        });
-        iceCandidateBuffer.delete(userName);
-    }
-}
