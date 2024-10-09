@@ -99,8 +99,7 @@ io.on('connection', (socket) => {
         offererUserName: socket.handshake.auth.userName // Add this line
     });
 
-    socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-    // Ensure the offererUserName exists in the answer
+   socket.on('newAnswer', ({ answer, room }, ackFunction) => {
     if (!answer.offererUserName) {
         console.log("Answer does not contain offererUserName");
         return;
@@ -113,24 +112,18 @@ io.on('connection', (socket) => {
     }
 
     const socketIdToAnswer = socketToAnswer.socketId;
-
-    // Find the corresponding offer based on the offererUserName
     const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
     if (!offerToUpdate) {
-        console.log("No OfferToUpdate for user:", answer.offererUserName);
+        console.log("No OfferToUpdate");
         return;
     }
 
-    // Acknowledge with the offer's ICE candidates
     ackFunction(offerToUpdate.offerIceCandidates);
-
-    // Update the offer with the answer details
     offerToUpdate.answer = answer.answer;
     offerToUpdate.answererUserName = userName;
-
-    // Emit the answer response to the correct socket
     socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
 });
+
 
 
     // Handle chat messages
