@@ -114,16 +114,16 @@ const call = async () => {
 async function answerOffer(offerObj) {
     console.log('Answering offer from:', offerObj.offererUserName);
     
-    // Create the peer connection first
+    // Create the peer connection
     await createPeerConnection(offerObj);
 
-    // Set the remote description
+    // Set the remote description using the offer
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offerObj.offer));
 
-    // Then create the answer
+    // Now create the answer
     const answer = await peerConnection.createAnswer();
 
-    // Set the local description
+    // Set the local description with the created answer
     await peerConnection.setLocalDescription(answer);
 
     // Emit the answer back to the signaling server
@@ -133,6 +133,7 @@ async function answerOffer(offerObj) {
         offererUserName: offerObj.offererUserName
     });
 }
+
 
 
 function joinRoom(room) {
