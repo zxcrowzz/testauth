@@ -21,15 +21,21 @@ let peerConnection; //the peerConnection that the two clients use to talk
 let didIOffer = false;
 
 let peerConfiguration = {
-    iceServers:[
+    iceServers: [
         {
-            urls:[
-              'stun:stun.l.google.com:19302',
-              'stun:stun1.l.google.com:19302'
+            urls: [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302'
             ]
+        },
+        {
+            urls: 'turn:relay1.expressturn.com:3478',
+            username: 'ef0645F7PFI1NDP4KH', // Replace with your TURN server username
+            credential: 'BNeVubliu1aMKEpN' // Replace with your TURN server credential
         }
     ]
-}
+};
+
 
 //when a client initiates a call
 const call = async e=>{
