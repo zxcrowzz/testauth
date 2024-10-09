@@ -27,17 +27,24 @@ socket.on('receivedIceCandidateFromServer',iceCandidate=>{
     console.log(iceCandidate)
 })
 
-function createOfferEls(offers){
-    //make green answer button for this new offer
+function createOfferEls(offers) {
+    if (!Array.isArray(offers)) {
+        console.error('Expected offers to be an array, but got:', typeof offers);
+        return;
+    }
+
     const answerEl = document.querySelector('#answer');
-    offers.forEach(o=>{
+    clearAnswerButtons(); // Clear existing buttons before adding new ones
+
+    offers.forEach(o => {
         console.log(o);
         const newOfferEl = document.createElement('div');
-        newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`
-        newOfferEl.addEventListener('click',()=>answerOffer(o))
+        newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
+        newOfferEl.addEventListener('click', () => answerOffer(o));
         answerEl.appendChild(newOfferEl);
-    })
+    });
 }
+
 
 
 function clearAnswerButtons() {
