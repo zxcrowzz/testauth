@@ -96,27 +96,42 @@ io.on('connection', (socket) => {
     // Handle new offers and answers
     socket.on('newOffer', ({ offer, room }) => {
         socket.to(room).emit('offerReceived', { offer, from: socket.id });
+        offererUserName: socket.handshake.auth.userName // Add this line
     });
 
     socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-        const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
-        if (!socketToAnswer) {
-            console.log("No matching socket for answer");
-            return;
-        }
+    // Ensure the offererUserName exists in the answer
+    if (!answer.offererUserName) {
+        console.log("Answer does not contain offererUserName");
+        return;
+    }
 
-        const socketIdToAnswer = socketToAnswer.socketId;
-        const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
-        if (!offerToUpdate) {
-            console.log("No OfferToUpdate");
-            return;
-        }
+    const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
+    if (!socketToAnswer) {
+        console.log("No matching socket for answer");
+        return;
+    }
 
-        ackFunction(offerToUpdate.offerIceCandidates);
-        offerToUpdate.answer = answer.answer;
-        offerToUpdate.answererUserName = userName;
-        socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-    });
+    const socketIdToAnswer = socketToAnswer.socketId;
+
+    // Find the corresponding offer based on the offererUserName
+    const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
+    if (!offerToUpdate) {
+        console.log("No OfferToUpdate for user:", answer.offererUserName);
+        return;
+    }
+
+    // Acknowledge with the offer's ICE candidates
+    ackFunction(offerToUpdate.offerIceCandidates);
+
+    // Update the offer with the answer details
+    offerToUpdate.answer = answer.answer;
+    offerToUpdate.answererUserName = userName;
+
+    // Emit the answer response to the correct socket
+    socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
+});
+
 
     // Handle chat messages
     socket.on('serverMessage', message => {
