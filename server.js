@@ -74,17 +74,11 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
 
-     const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
-    console.log('usersInRoom:', usersInRoom); // Debugging line
-
-    if (usersInRoom) {
-    const userCount = Object.keys(usersInRoom).length;
-    console.log('User count in room:', userCount); // Debugging line
-
-    if (userCount === 2) {
-        console.log('emitting111');
-        io.to(room).emit('bothUsersInRoom'); // Notify both users
-    }
+      const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
+        if (usersInRoom && Object.keys(usersInRoom).length === 2) {
+            console.log('emitting111');
+            io.to(room).emit('bothUsersInRoom'); // Notify both users
+        }
 
     });
 
