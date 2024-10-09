@@ -20,8 +20,8 @@ let peerConnection;
 let isInCall = false;
 let didIOffer = false;
 
-const localVideoEl = document.getElementById('localVideo');
-const remoteVideoEl = document.getElementById('remoteVideo');
+const localVideoEl = document.getElementById('local-video');
+const remoteVideoEl = document.getElementById('remote-video');
 
 const fetchUserMedia = async () => {
     try {
