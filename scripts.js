@@ -260,11 +260,26 @@ function joinRoom(room) {
     if (currentRoom) {
         socket.emit('leaveRoom', currentRoom); // Leave previous room if exists
     }
+    
     currentRoom = room;
     socket.emit('joinRoom', room);
 
-    
+    // Listen for both users in the room
+    socket.once('bothUsersInRoom', () => { // Use 'once' to prevent multiple triggers
+        console.log('Both users are in the room, initiating call...');
+        if (!isInCall) {
+            call(); // Initiate the call
+        }
+    });
+
+    // Add error handling for joinRoom
+    socket.on('errorJoiningRoom', (errorMessage) => {
+        console.error('Error joining room:', errorMessage);
+        alert(errorMessage); // Notify user
+        resetClientState(); // Reset state if unable to join
+    });
 }
+
 // Listen for both users in the room
     socket.on('bothUsersInRoom', () => {
         console.log('Both users are in the room, initiating call...');
