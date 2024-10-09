@@ -57,7 +57,7 @@ const connectedSockets = [
 ]
 
 io.on('connection', (socket) => {
-    connectedClients++;
+   connectedClients++;
     
     const userName = socket.handshake.auth.userName;
     const password = socket.handshake.auth.password;
@@ -69,110 +69,71 @@ io.on('connection', (socket) => {
 
     connectedSockets.push({ socketId: socket.id, userName });
 
-    // Handle room joining
     socket.on('joinRoom', (room) => {
         socket.join(room);
         console.log(`${socket.id} joined room: ${room}`);
      
-          
-            
         const usersInRoom = io.sockets.adapter.rooms.get(room);
         const currentUserCount = usersInRoom ? usersInRoom.size : 0;
         if (currentUserCount === 2) {
-        console.log('emitting111');
-        io.to(room).emit('bothUsersInRoom'); // Notify both users
-    } else {
-        console.log('Not enough users in room to emit event.');
-    }
-
+            io.to(room).emit('bothUsersInRoom');
+        } else {
+            console.log('Not enough users in room to emit event.');
+        }
     });
 
-    // Handle room leaving
     socket.on('leaveRoom', (room) => {
         socket.leave(room);
         console.log(`${socket.id} left room: ${room}`);
     });
 
-    // Handle new offers and answers
-   socket.on('newOffer', ({ offer, room }) => {
-    const offerObj = {
-        offer,
-        from: socket.id,
-        offererUserName: socket.handshake.auth.userName
-    };
-    socket.to(room).emit('offerReceived', offerObj);
-});
+    socket.on('newOffer', ({ offer, room }) => {
+        const offerObj = {
+            offer,
+            from: socket.id,
+            offererUserName: socket.handshake.auth.userName
+        };
+        socket.to(room).emit('offerReceived', offerObj);
+    });
 
-
-   socket.on('newAnswer', ({ answer, room }, ackFunction) => {
-        if (!answer.offererUserName) {
-            console.log("Answer does not contain offererUserName");
-            return;
-        }
-
+    socket.on('newAnswer', ({ answer, room }, ackFunction) => {
         const socketToAnswer = connectedSockets.find(s => s.userName === answer.offererUserName);
-        if (!socketToAnswer) {
-            console.log("No matching socket for answer");
-            return;
-        }
-
-        const socketIdToAnswer = socketToAnswer.socketId;
+        const socketIdToAnswer = socketToAnswer ? socketToAnswer.socketId : null;
         const offerToUpdate = offers.find(o => o.offererUserName === answer.offererUserName);
-        if (!offerToUpdate) {
-            console.log("No OfferToUpdate");
-            return;
+
+        if (socketIdToAnswer && offerToUpdate) {
+            ackFunction(offerToUpdate.offerIceCandidates);
+            offerToUpdate.answer = answer.answer;
+            offerToUpdate.answererUserName = userName;
+            socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
+        } else {
+            console.log('Error processing answer:', answer);
         }
-
-        ackFunction(offerToUpdate.offerIceCandidates);
-        offerToUpdate.answer = answer.answer;
-        offerToUpdate.answererUserName = userName;
-        socket.to(socketIdToAnswer).emit('answerResponse', offerToUpdate);
-    });
-
-
-
-    // Handle chat messages
-    socket.on('serverMessage', message => {
-        socket.broadcast.emit('chatmessage', message);
-    });
-
-    socket.on('sendMessage', (data) => {
-        console.log('Message received from client:', data.text);
-        socket.broadcast.emit('newMessage', { text: data.text });
-    });
-
-    socket.on('hangUp', () => {
-        console.log('User hung up: ' + socket.id);
-        socket.broadcast.emit('hangUp');
-        io.emit('lastUserLeft');
     });
 
     socket.on('sendIceCandidateToSignalingServer', iceCandidateObj => {
         const { didIOffer, iceUserName, iceCandidate } = iceCandidateObj;
+        let offerInOffers, socketToSendTo;
 
         if (didIOffer) {
-            const offerInOffers = offers.find(o => o.offererUserName === iceUserName);
-            if (offerInOffers) {
-                offerInOffers.offerIceCandidates.push(iceCandidate);
-                if (offerInOffers.answererUserName) {
-                    const socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.answererUserName);
-                    if (socketToSendTo) {
-                        socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
-                    } else {
-                        console.log("Ice candidate received but could not find answerer");
-                    }
-                }
+            offerInOffers = offers.find(o => o.offererUserName === iceUserName);
+            if (offerInOffers && offerInOffers.answererUserName) {
+                socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.answererUserName);
             }
         } else {
-            const offerInOffers = offers.find(o => o.answererUserName === iceUserName);
-            const socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.offererUserName);
-            if (socketToSendTo) {
-                socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
-            } else {
-                console.log("Ice candidate received but could not find offerer");
+            offerInOffers = offers.find(o => o.answererUserName === iceUserName);
+            if (offerInOffers) {
+                socketToSendTo = connectedSockets.find(s => s.userName === offerInOffers.offererUserName);
             }
         }
+
+        if (socketToSendTo) {
+            socket.to(socketToSendTo.socketId).emit('receivedIceCandidateFromServer', iceCandidate);
+        } else {
+            console.log('Ice candidate received but could not find corresponding user');
+        }
     });
+});
 
     // Handle disconnection
     socket.on('disconnect', () => {
