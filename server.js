@@ -30,7 +30,7 @@ let connectedClients = 0;
 //we changed our express setup so we can use https
 //pass the key and cert to createServer on https
 const expressServer = app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 3000}`);
+    console.log(Server is running on port ${process.env.PORT || 3000});
 });
 //create our socket.io server... it will listen to our express port
 const io = socketio(expressServer,{
@@ -56,59 +56,55 @@ const connectedSockets = [
     //username, socketId
 ]
 
-io.on('connection', (socket) => {
+io.on('connection',(socket)=>{
     connectedClients++;
+    
+    // console.log("Someone has connected");
     const userName = socket.handshake.auth.userName;
+    const password = socket.handshake.auth.password;
 
-    // Validate user connection
-    if (!isValidUser(userName)) {
+    if(password !== "x"){
         socket.disconnect(true);
         return;
     }
+    connectedSockets.push({
+        socketId: socket.id,
+        userName
+    })
 
-    connectedSockets.push({ socketId: socket.id, userName });
-
-    socket.on('joinRoom', (roomId) => {
-        socket.join(roomId);
-        socket.emit('chatmessage', 'Welcome to the room!');
-        if (offers.length) {
-            socket.emit('availableOffers', offers);
-        }
+    socket.emit('chatmessage', 'hello')
+    socket.on('serverMessage', message => {
+    socket.broadcast.emit('chatmessage', message)
     });
-
-    socket.on('newOffer', (newOffer) => {
-        const roomId = newOffer.room;
-        const offerData = {
-            offererUserName: userName,
-            offer: newOffer,
-            offerIceCandidates: [],
-            answererUserName: null,
-            answer: null,
-            answererIceCandidates: []
-        };
-        offers.push(offerData);
-        socket.to(roomId).emit('newOfferAwaiting', offers.slice(-1));
+    socket.on('sendMessage', (data) => {
+        console.log('Message received from client:', data.text);
+        
+        // Broadcast the message to all other clients
+        socket.broadcast.emit('newMessage', { text: data.text });
     });
-
-    socket.on('newAnswer', (offerObj, ackFunction) => {
-        const socketToAnswer = connectedSockets.find(s => s.userName === offerObj.offererUserName);
-        if (socketToAnswer) {
-            const offerToUpdate = offers.find(o => o.offererUserName === offerObj.offererUserName);
-            if (offerToUpdate) {
-                ackFunction(offerToUpdate.offerIceCandidates);
-                offerToUpdate.answer = offerObj.answer;
-                offerToUpdate.answererUserName = userName;
-                socket.to(socketToAnswer.socketId).emit('answerResponse', offerToUpdate);
-            }
-        }
+    socket.on('chat message', (message) => {
+        // Broadcast the message to all connected clients
+        io.emit('chat message', message);
     });
+    socket.on('hangUp', () => {
+        console.log('User hung up: ' + socket.id);
+        // Broadcast the hang-up event to all other connected clients
+        socket.broadcast.emit('hangUp');
+        io.emit('lastUserLeft');
+    });
+   
 
     socket.on('disconnect', () => {
         connectedClients--;
-        connectedSockets = connectedSockets.filter(s => s.socketId !== socket.id);
-        // Cleanup logic for offers if necessary
+        console.log('User disconnected');
+        socket.broadcast.emit('userDisconnected', { userId: socket.id });
+        if (connectedClients === 0) {
+            offers = [];
+            // Trigger reset logic when no clients are connected
+            io.emit('lastUserLeft');
+            console.log('Last user left, notifying all clients.');
+        }
     });
-});
 
 
 
@@ -333,11 +329,11 @@ app.post("/register", [
 
         await pendingUser.save();
 
-        const url = `${process.env.HEROKU_APP_URL}/confirmation/${token}`;
+        const url = ${process.env.HEROKU_APP_URL}/confirmation/${token};
         await transporter.sendMail({
             to: pendingUser.email,
             subject: 'Confirm Email',
-            html: `Click <a href="${url}">here</a> to confirm your email.`,
+            html: Click <a href="${url}">here</a> to confirm your email.,
         });
 
         res.status(201).send('User registered. Please check your email to confirm.');
@@ -405,7 +401,7 @@ app.post("/login", async (req, res, next) => {
             await transporter.sendMail({
                 to: user.email,
                 subject: 'Your Verification Code',
-                html: `<p>Your verification code is: <strong>${verificationCode}</strong></p>`,
+                html: <p>Your verification code is: <strong>${verificationCode}</strong></p>,
             });
 
             return res.redirect('/verify');
@@ -449,16 +445,6 @@ res.redirect('/register')
 app.post('/redirect1', (req,res) => {
     res.redirect('/login')
     
-});
-
-app.get('/search', async (req, res) => {
-    const { name } = req.query;
-    try {
-        const users = await User.find({ name: new RegExp(name, 'i') }); // Case-insensitive search
-        res.json(users);
-    } catch (error) {
-        res.status(500).send('Error searching users');
-    }
 });
 // Room route
 app.get('/:index.html:', (req, res) => {
