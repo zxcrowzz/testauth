@@ -76,6 +76,10 @@ io.on('connection', (socket) => {
 
       const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
         if (usersInRoom && Object.keys(usersInRoom).length === 2) {
+            const usersInRoom = io.sockets.adapter.rooms[room]?.sockets;
+            console.log('usersInRoom:', usersInRoom); // Log users in room
+            const currentUserCount = usersInRoom ? Object.keys(usersInRoom).length : 0;
+            console.log('Current user count in room:', currentUserCount); // Debugging line
             console.log('emitting111');
             io.to(room).emit('bothUsersInRoom'); // Notify both users
         }
