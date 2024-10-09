@@ -11,16 +11,7 @@ const socket = io.connect('https://r3dxx-9ce6f110c87b.herokuapp.com', {
         password
     }
 });
-const configuration = {
-    iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' }, // STUN server
-        {
-            urls: 'turn:your-turn-server-url', // Replace with your TURN server URL
-            username: 'your-username', // Replace with your TURN username
-            credential: 'your-credential' // Replace with your TURN password
-        }
-    ]
-};
+
 
 const messageDiv = document.getElementById('container1');
 let localStream;
@@ -44,6 +35,16 @@ const fetchUserMedia = async () => {
 };
 
 const createPeerConnection = async (offerObj) => {
+        const configuration = {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }, // STUN server
+            {
+                urls: 'turn:your-turn-server-url', // Replace with your TURN server URL
+                username: 'your-username', // Replace with your TURN username
+                credential: 'your-credential' // Replace with your TURN password
+            }
+        ]
+    };
     peerConnection = new RTCPeerConnection();
 
     // Add local stream tracks to peer connection
