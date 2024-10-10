@@ -72,7 +72,6 @@ io.on('connection',(socket)=>{
         return;
     }
 
-   const userName = 'User' + socket.id; // Replace with actual username logic
     connectedSockets.push({
         socketId: socket.id,
         userName
