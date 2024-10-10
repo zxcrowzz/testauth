@@ -72,67 +72,54 @@ io.on('connection',(socket)=>{
         return;
     }
 
-    
+   const userName = 'User' + socket.id; // Replace with actual username logic
     connectedSockets.push({
         socketId: socket.id,
         userName
-    })
+    });
 
     socket.on('create_join', (roomName) => {
-    if (rooms[roomName]) {
-        rooms[roomName]++;
-    } else {
+        if (rooms[roomName]) {
+            rooms[roomName]++;
+        } else {
+            rooms[roomName] = 1;
+        }
 
-        rooms[roomName] = 1;
+        socket.join(roomName);
+        socket.emit('room_joined');
+        io.to(roomName).emit('room_user_count', rooms[roomName]);
+        io.to(roomName).emit('bothUsersInRoom', roomName);
+    });
 
-    }
-     socket.join(roomName);
-     socket.emit('room_joined')
-    io.to(roomName).emit('room_user_count' , rooms[roomName]);
-    io.to(roomName).emit('bothUsersInRoom', roomName);
-        
-    });
-    socket.on('chat message', (message) => {
-        // Broadcast the message to all connected clients
-        io.emit('chat message', message);
-    });
-    socket.on('hangUp', () => {
-        console.log('User hung up: ' + socket.id);
-        // Broadcast the hang-up event to all other connected clients
-        socket.broadcast.emit('hangUp');
-    });
-   
+    socket.on('create_offer', (roomName) => {
+        const offer = {
+            offererUserId: socket.id,
+            offererUserName: userName,
+            // Include other offer details as needed
+        };
 
+        // Emit the offer to users in the specific room
+        io.to(roomName).emit('new_offer', offer);
+    });
+
+    // Handle disconnection
     socket.on('disconnect', () => {
-        for (let roomName in rooms) {
-        if (socket.rooms.has(roomName)) {
-            
-            rooms[roomName]--;
-            io.to(roomName).emit('room_user_count' , rooms[roomName]);
-            if (rooms[roomName] === 0) {
-
-            delete rooms[roomName];
-
-            }
-            }
-
+        // Remove the user from connectedSockets
+        const index = connectedSockets.findIndex(s => s.socketId === socket.id);
+        if (index !== -1) {
+            connectedSockets.splice(index, 1);
         }
-        connectedClients--;
-        console.log('User disconnected');
-        socket.broadcast.emit('userDisconnected', { userId: socket.id });
-        if (connectedClients === 0) {
-            // Trigger reset logic when no clients are connected
-            resetServerState()
+
+        // Update room counts
+        for (const room in rooms) {
+            if (rooms.hasOwnProperty(room)) {
+                rooms[room]--;
+                if (rooms[room] <= 0) {
+                    delete rooms[room]; // Clean up empty rooms
+                }
+            }
         }
     });
-
-
-
-    //a new client has joined. If there are any offers available,
-    //emit them out
-    if(offers.length){
-        socket.emit('availableOffers',offers);
-    }
     
 socket.on('newOffer', ({ offer, room, offererUserName }) => {
     const newOffer = {
