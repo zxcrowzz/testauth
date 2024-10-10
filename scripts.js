@@ -210,7 +210,7 @@ const addNewIceCandidate = iceCandidate=>{
 
 // Function to handle the hang-up action
 function hangUp() {
-
+    resetClientState()
     if (isInCall === false) {
         console.log('No active call to hang up from.');
         return; // Exit if there’s no active call
