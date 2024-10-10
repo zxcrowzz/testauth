@@ -115,6 +115,7 @@ const fetchUserMedia = ()=>{
                 audio: true
             });
             localVideoEl.srcObject = stream;
+            localVideoEl.muted = true;
             localStream = stream;    
             resolve();    
         }catch(err){
