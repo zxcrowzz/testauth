@@ -1,4 +1,8 @@
 
+// Function to verify if a user is in the room
+function verifyUserInRoom(userId) {
+    return usersInRoom.some(user => user.id === userId);
+}
 //on connection get all available offers and call createOfferEls
 socket.on('availableOffers', offers => {
     if (Array.isArray(offers)) {
@@ -27,6 +31,7 @@ socket.on('receivedIceCandidateFromServer',iceCandidate=>{
     console.log(iceCandidate)
 })
 
+
 function createOfferEls(offers) {
     if (!Array.isArray(offers)) {
         console.error('Expected offers to be an array, but got:', typeof offers);
@@ -40,10 +45,18 @@ function createOfferEls(offers) {
         console.log(o);
         const newOfferEl = document.createElement('div');
         newOfferEl.innerHTML = `<button class="btn btn-success col-1">Answer ${o.offererUserName}</button>`;
-        newOfferEl.addEventListener('click', () => answerOffer(o));
+        newOfferEl.addEventListener('click', () => {
+            if (verifyUserInRoom(o.offererUserId)) {
+                answerOffer(o);
+            } else {
+                console.error('User not in the room or unauthorized access');
+            }
+        });
         answerEl.appendChild(newOfferEl);
-    });
+   });
 }
+
+
 
 
 
