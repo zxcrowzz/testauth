@@ -148,7 +148,7 @@ h2 {
 .video-player {
     width: 100%;  /* Adjust to fit the width of the container */
     height: auto; /* Maintain aspect ratio */
-    max-height: 280px; /* Ensure each video takes up no more than half the container height */
+    max-height: 260px; /* Ensure each video takes up no more than half the container height */
     margin: 0px 0; /* Add some vertical margin between videos */
 }
 
