@@ -1,4 +1,4 @@
-
+const usersInRoom = [];
 // Function to verify if a user is in the room
 function verifyUserInRoom(userId) {
     return usersInRoom.some(user => user.id === userId);
@@ -12,7 +12,22 @@ socket.on('availableOffers', offers => {
         console.error('Expected offers to be an array, but got:', typeof offers);
     }
 });
+socket.on('bothUsersInRoom' , roomName => {
 
+
+ const currentUserId = socket.id; // Get the current user's socket ID
+
+    // Check if the user is already in the usersInRoom array
+    if (!usersInRoom.includes(currentUserId)) {
+        usersInRoom.push(currentUserId); // Add the current user to the array
+        console.log(`User ${currentUserId} added to usersInRoom for ${roomName}`);
+    }
+
+    // Log the current users in the room
+    console.log('Current users in the room:', usersInRoom);
+
+
+});
 //someone just made a new offer and we're already here - call createOfferEls
 socket.on('newOfferAwaiting', offers => {
     if (Array.isArray(offers)) {
