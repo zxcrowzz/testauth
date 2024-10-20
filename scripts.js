@@ -48,7 +48,7 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: 'relay1.expressturn.com:3478',
+            urls: 'turn:relay1.expressturn.com:3478',
             username: 'efJ3O8UT1NCM9BH5NE', // Replace with your TURN server username
             credential: '7txHlplcvesmzjo8' // Replace with your TURN server credential
         }
