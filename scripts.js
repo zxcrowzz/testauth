@@ -48,9 +48,9 @@ let peerConfiguration = {
             ]
         },
         {
-            urls: 'turn:relay1.expressturn.com:3478',
-            username: 'ef0645F7PFI1NDP4KH', // Replace with your TURN server username
-            credential: 'BNeVubliu1aMKEpN' // Replace with your TURN server credential
+            urls: 'relay1.expressturn.com:3478',
+            username: 'efJ3O8UT1NCM9BH5NE', // Replace with your TURN server username
+            credential: '7txHlplcvesmzjo8' // Replace with your TURN server credential
         }
     ]
 };
